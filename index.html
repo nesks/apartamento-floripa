@@ -126,7 +126,10 @@
   </div>
 
   <main class="wrap" style="padding-bottom:60px">
-    <p class="count" id="count"></p>
+    <div style="display:flex;align-items:center;gap:14px;flex-wrap:wrap;margin:24px 0 18px">
+      <p class="count" id="count" style="margin:0"></p>
+      <span id="sync" style="font-size:12px;font-weight:700;color:var(--muted)"></span>
+    </div>
     <div class="grid" id="grid"></div>
   </main>
 
@@ -177,6 +180,48 @@ const VKEY = "visitasApartamentosFloripa";
 let visitas = {};
 try { visitas = JSON.parse(localStorage.getItem(VKEY)) || {}; } catch(e) { visitas = {}; }
 function saveV(){ try { localStorage.setItem(VKEY, JSON.stringify(visitas)); } catch(e){} }
+
+/* ---- Sincronização com a planilha (Google Apps Script) ---- */
+const API = "https://script.google.com/macros/s/AKfycbw87sfaP_8Jsxy2Cr6ID-mMpokzjgDRg89CQGCnPJIdrDx5gSAIaRNyYsdrfQMDoFq9/exec";
+let syncEl = null;
+function setSync(txt, color){ if(syncEl){ syncEl.textContent = txt; syncEl.style.color = color || "var(--muted)"; } }
+
+function payloadFor(id){
+  const n = notas[id] || {};
+  return { id:String(id), b:(n.b==null?null:n.b), c:(n.c==null?null:n.c), t:(n.t==null?null:n.t), visita:(visitas[id]||"") };
+}
+
+const _timers = {};
+function pushRemote(id, immediate){
+  clearTimeout(_timers[id]);
+  const doIt = function(){
+    setSync("Salvando…", "#8A5A12");
+    fetch(API, { method:"POST", body: JSON.stringify(payloadFor(id)) })
+      .then(function(){ setSync("Tudo salvo na planilha", "#0B6E63"); })
+      .catch(function(){ setSync("Sem conexão — salvo neste aparelho", "#B23A2E"); });
+  };
+  if(immediate) doIt(); else _timers[id] = setTimeout(doIt, 600);
+}
+
+function loadFromServer(){
+  setSync("Carregando da planilha…");
+  fetch(API).then(function(r){ return r.json(); }).then(function(j){
+    if(j && j.ok && j.data){
+      Object.keys(j.data).forEach(function(id){
+        const d = j.data[id], nn = {};
+        if(d.b!=null && d.b!=="") nn.b = parseFloat(d.b);
+        if(d.c!=null && d.c!=="") nn.c = parseFloat(d.c);
+        if(d.t!=null && d.t!=="") nn.t = parseFloat(d.t);
+        if(Object.keys(nn).length) notas[id] = nn; else delete notas[id];
+        if(d.visita) visitas[id] = d.visita; else delete visitas[id];
+      });
+      save(); saveV(); render();
+      setSync("Tudo salvo na planilha", "#0B6E63");
+    } else {
+      setSync("Sem conexão — salvo neste aparelho", "#B23A2E");
+    }
+  }).catch(function(){ setSync("Sem conexão — salvo neste aparelho", "#B23A2E"); });
+}
 
 const NOMES = {b:"Bianca", c:"Ciro", t:"Tânia"};
 const VISIT = {
@@ -356,6 +401,7 @@ document.getElementById("grid").addEventListener("input", function(e){
   const m = media(id);
   const span = document.querySelector('[data-media="'+id+'"]');
   if(span){ span.textContent = (m==null?"—":fmt1(m)); span.style.color = mediaCor(m); }
+  pushRemote(id, false);
 });
 
 /* Visita: marca/desmarca (família), salva e re-renderiza (reflete selo + filtro) */
@@ -365,11 +411,14 @@ document.getElementById("grid").addEventListener("click", function(e){
   const id = btn.dataset.id, k = btn.dataset.visit;
   if(visitas[id] === k){ delete visitas[id]; } else { visitas[id] = k; }
   saveV();
+  pushRemote(id, true);
   render();
 });
 
 document.getElementById("ordem").addEventListener("change",e=>{fOrdem=e.target.value;render();});
+syncEl = document.getElementById("sync");
 render();
+loadFromServer();
 </script>
 </body>
 </html>

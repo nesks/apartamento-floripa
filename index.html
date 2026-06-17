@@ -1,0 +1,375 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Apartamentos Floripa</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+<style>
+  :root{
+    --paper:#EAEEEC; --card:#FFFFFF; --ink:#16241F; --muted:#5E6E69;
+    --line:#E2E8E4; --teal:#0B6E63; --teal-dark:#075048; --teal-tint:#E0F0EC;
+    --amber:#8A5A12; --amber-tint:#FBEFD7;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{background:var(--paper);color:var(--ink);font-family:'Inter',system-ui,sans-serif;-webkit-font-smoothing:antialiased}
+  a{text-decoration:none}
+  .wrap{max-width:1200px;margin:0 auto;padding:0 22px}
+
+  header{background:var(--ink);color:#fff}
+  .eyebrow{color:#8FD3C7;font-size:12.5px;font-weight:700;letter-spacing:.18em;text-transform:uppercase}
+  h1{font-family:'Fraunces',Georgia,serif;font-size:44px;font-weight:600;letter-spacing:-.02em;line-height:1.05;margin-top:8px}
+  .sub{color:#B9C7C2;font-size:15px;margin-top:10px;max-width:620px}
+
+  .bar{position:sticky;top:0;z-index:10;background:rgba(234,238,236,.92);backdrop-filter:blur(8px);border-bottom:1px solid var(--line)}
+  .bar-in{display:flex;flex-wrap:wrap;align-items:center;gap:12px 18px;padding:14px 22px;max-width:1200px;margin:0 auto}
+  .grp{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+  .lbl{font-size:11.5px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.06em}
+  .chip{border:1px solid var(--line);background:#fff;color:var(--muted);font-size:13px;font-weight:600;padding:7px 14px;border-radius:999px;cursor:pointer;transition:all .15s;font-family:inherit}
+  .chip:hover{border-color:var(--teal)}
+  .chip.active{background:var(--teal);border-color:var(--teal);color:#fff}
+  select{border:1px solid var(--line);background:#fff;color:var(--ink);font-size:13.5px;font-weight:600;padding:8px 12px;border-radius:10px;cursor:pointer;font-family:inherit}
+  .push{margin-left:auto}
+
+  .count{color:var(--muted);font-size:13.5px;margin:24px 0 18px}
+  .count strong{color:var(--ink)}
+
+  .grid{display:grid;gap:20px;grid-template-columns:repeat(auto-fill,minmax(300px,1fr))}
+
+  .card{display:flex;flex-direction:column;background:var(--card);border:1px solid var(--line);border-radius:18px;overflow:hidden;box-shadow:0 1px 2px rgba(20,40,33,.04),0 12px 28px -18px rgba(20,40,33,.25);transition:transform .2s,box-shadow .2s}
+  .card:hover{transform:translateY(-3px);box-shadow:0 1px 2px rgba(20,40,33,.05),0 20px 40px -20px rgba(20,40,33,.35)}
+  .head{padding:16px 18px 14px}
+  .head-top{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:12px}
+  .bairro{display:inline-flex;align-items:center;gap:6px;font-size:12px;font-weight:700}
+  .status{font-size:11px;font-weight:700;letter-spacing:.04em;text-transform:uppercase;padding:4px 9px;border-radius:999px;white-space:nowrap}
+  .title{font-family:'Fraunces',Georgia,serif;font-size:21px;font-weight:600;line-height:1.15;letter-spacing:-.01em}
+  .agency{color:var(--muted);font-size:12.5px;margin-top:3px}
+  .price{margin-top:12px;font-family:'Fraunces',Georgia,serif;font-size:27px;font-weight:600;letter-spacing:-.02em}
+
+  .addr{display:flex;align-items:center;gap:8px;margin-top:12px;font-size:12.5px;color:var(--muted);border:1px solid var(--line);background:#fff;padding:8px 10px;border-radius:10px;transition:all .15s}
+  .addr:hover{border-color:var(--teal);color:var(--teal-dark);background:var(--teal-tint)}
+  .addr>svg{color:var(--teal);flex-shrink:0}
+  .addr .txt{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;flex:1}
+  .addr .tag{display:inline-flex;align-items:center;gap:4px;margin-left:auto;font-size:10px;font-weight:700;letter-spacing:.04em;text-transform:uppercase;padding:3px 8px;border-radius:999px;flex-shrink:0;background:var(--teal-tint);color:var(--teal-dark)}
+  .addr:hover .tag{background:#fff}
+
+  /* Seletor de visita (família) */
+  .seg-label{font-size:11px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);margin:16px 0 8px;display:flex;align-items:center;gap:6px}
+  .seg-label svg{color:var(--teal)}
+  .seg{display:flex;gap:6px}
+  .seg-btn{flex:1;display:flex;align-items:center;justify-content:center;gap:5px;border:1px solid var(--line);background:#fff;color:var(--muted);font-family:inherit;font-size:11.5px;font-weight:700;padding:9px 4px;border-radius:9px;cursor:pointer;transition:all .15s;line-height:1.1;white-space:nowrap}
+  .seg-btn:hover{border-color:var(--muted)}
+  .seg-btn.on{color:#fff}
+  .seg-btn svg{flex-shrink:0}
+
+  .highs{display:flex;gap:10px;padding:14px 18px}
+  .high{display:flex;align-items:center;gap:10px;flex:1;border-radius:12px;padding:10px 12px}
+  .high .num{font-family:'Fraunces',Georgia,serif;font-weight:800;font-size:20px;line-height:1}
+  .high .cap{font-size:10.5px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;opacity:.82;margin-top:2px}
+  .high.q{background:var(--teal-tint);color:var(--teal-dark)}
+  .high.v{background:var(--amber-tint);color:var(--amber)}
+
+  .details{padding:14px 18px 0;border-top:1px solid var(--line)}
+  .details ul{list-style:none;display:flex;flex-direction:column;gap:10px}
+  .det{display:flex;align-items:flex-start;gap:10px;font-size:13.5px;line-height:1.45;color:var(--muted)}
+  .det svg{color:var(--teal);flex-shrink:0;margin-top:2px}
+  .det b{color:var(--ink);font-weight:600}
+
+  .notas{padding:16px 18px 4px;margin-top:14px;border-top:1px solid var(--line)}
+  .notas-title{font-size:11px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);margin-bottom:10px;display:flex;align-items:center;gap:6px}
+  .notas-title svg{color:var(--teal)}
+  .notas-row{display:flex;gap:8px}
+  .nota{flex:1;display:flex;flex-direction:column;gap:5px}
+  .nota>span{font-size:11px;font-weight:600;color:var(--ink);text-align:center}
+  .nota input{width:100%;text-align:center;border:1px solid var(--line);border-radius:9px;padding:9px 4px;font-family:'Fraunces',Georgia,serif;font-size:18px;font-weight:600;color:var(--ink);background:#fff;-moz-appearance:textfield}
+  .nota input::-webkit-outer-spin-button,.nota input::-webkit-inner-spin-button{-webkit-appearance:none;margin:0}
+  .nota input::placeholder{color:#C2CCC8;font-size:15px}
+  .nota input:focus{outline:none;border-color:var(--teal);box-shadow:0 0 0 3px rgba(11,110,99,.13)}
+  .media{margin-top:12px;display:flex;align-items:center;justify-content:center;gap:9px;background:var(--paper);border-radius:11px;padding:9px 12px;font-size:12px;font-weight:700;color:var(--muted);letter-spacing:.06em;text-transform:uppercase}
+  .media .mval{font-family:'Fraunces',Georgia,serif;font-size:23px;font-weight:700;letter-spacing:0;text-transform:none}
+
+  .cta-wrap{padding:18px;margin-top:auto}
+  .cta{display:flex;align-items:center;justify-content:center;gap:8px;width:100%;background:var(--teal);color:#fff;font-weight:700;font-size:14.5px;padding:12px 16px;border-radius:12px;transition:background .15s}
+  .cta:hover{background:var(--teal-dark)}
+
+  .empty{text-align:center;padding:60px 20px;color:var(--muted)}
+  footer{border-top:1px solid var(--line);padding:22px;text-align:center;color:var(--muted);font-size:12.5px}
+
+  @media (max-width:600px){ h1{font-size:34px} .push{margin-left:0} }
+</style>
+</head>
+<body>
+  <header>
+    <div class="wrap" style="padding-top:34px;padding-bottom:30px">
+      <div class="eyebrow">Vitrine de imóveis · Florianópolis</div>
+      <h1>Apartamentos Floripa</h1>
+      <p class="sub">Comparativo dos imóveis. Marque a vontade de visitar, dê notas de 0 a 10, abra a localização no Google Maps e veja o anúncio. Notas e marcações ficam salvas neste navegador.</p>
+    </div>
+  </header>
+
+  <div class="bar">
+    <div class="bar-in">
+      <div class="grp"><span class="lbl">Bairro</span><span id="f-bairro" class="grp"></span></div>
+      <div class="grp"><span class="lbl">Quartos</span><span id="f-quartos" class="grp"></span></div>
+      <div class="grp"><span class="lbl">Visita</span><span id="f-visita" class="grp"></span></div>
+      <div class="grp push"><span class="lbl">Ordenar</span>
+        <select id="ordem">
+          <option value="preco-asc">Menor preço</option>
+          <option value="preco-desc">Maior preço</option>
+          <option value="area-desc">Maior área</option>
+          <option value="media-desc">Maior nota média</option>
+        </select>
+      </div>
+    </div>
+  </div>
+
+  <main class="wrap" style="padding-bottom:60px">
+    <p class="count" id="count"></p>
+    <div class="grid" id="grid"></div>
+  </main>
+
+  <footer>Dados da planilha “Apartamentos Floripa”. Endereços exatos via Google Maps quando o condomínio é nomeado; demais com localização aproximada pelo bairro. Notas e marcações de visita são salvas localmente no seu navegador.</footer>
+
+<script>
+const APTS = [
+  {id:1,condominio:"Ap Roberto",imobiliaria:"Pense imóveis",valor:830000,bairro:"Itacorubi",area:"88,76",quartos:2,vagas:2,suite:"2 suítes",face:null,cond:null,ocupacao:"Proprietário",obs:"2 suítes, hobby box grande",visitar:"SIM",exact:false,addr:null,lat:null,lng:null,pid:null,link:"https://imoveis.novovista.com.br/?v2=a2V5PTkzZDAwYjU2ZmJiZThmOWZjODYxNTgzZWM5NjgxNDAxJmNvZD0yNTQxJmQ9NjQmY3M9MiZtYXBhPU5hbyZiYWlycm9fY29tZXJjaWFsPVNpbSZsb2dpbj1uYW8mc3RhdHVzPVZlbmRhJnB1cnBvc2U9JTVCJTIydmVuZGElMjIlNUQmY29kX2VtPTIyMDU0"},
+  {id:2,condominio:null,imobiliaria:"Pense imóveis",valor:835000,bairro:"Itacorubi",area:"77,15",quartos:2,vagas:2,suite:null,face:null,cond:null,ocupacao:null,obs:"Cozinha pronta, móveis sob medida",visitar:"Pai e mãe",exact:false,addr:null,lat:null,lng:null,pid:null,link:"https://penseimoveisfloripa.com.br/imovel/ita2915/"},
+  {id:3,condominio:"Burle Marx",imobiliaria:"F1 Imobiliária",valor:875000,bairro:"Itacorubi",area:"84,82",quartos:3,vagas:1,suite:null,face:"Leste",cond:null,ocupacao:"Proprietário",obs:"3 quartos",visitar:"SIM",exact:true,addr:"Rod. Amaro Antônio Viêira, 2797",lat:-27.5881653,lng:-48.4958156,pid:"ChIJr7CBAN84J5URpQgRyl12HdI",link:"http://v.imo.bi/KJ85ByVih7LXVG"},
+  {id:4,condominio:"Green Village",imobiliaria:"Daga / F1",valor:1390000,bairro:"Itacorubi",area:"84",quartos:3,vagas:2,suite:null,face:null,cond:"R$ 1.128,77",ocupacao:null,obs:"3 quartos, pouco sol, NEMA",visitar:"SIM",exact:true,addr:"R. Antônio Costa, 11",lat:-27.5797521,lng:-48.5114292,pid:"ChIJ10vCVvI4J5UR7N4CMStp3Z4",link:"https://f1ciaimobiliaria.com.br/imoveis/venda-apartamento-green-village-residence-de-3-quartos-no-bairro-itacorubi-florianopolis-1957252/"},
+  {id:5,condominio:"Mont Real",imobiliaria:"Meu móvel na ilha / F1",valor:970000,bairro:"Itacorubi",area:"99",quartos:2,vagas:2,suite:null,face:null,cond:"R$ 881,00",ocupacao:null,obs:"Cozinha rústica",visitar:"SIM",exact:true,addr:"Rod. Amaro Antônio Viêira, 2651",lat:-27.5872714,lng:-48.4966824,pid:"ChIJY1X2aN44J5URAarOWSHcrYQ",link:"https://loft.com.br/imovel/apartamento-amaro-antonio-vieira-itacorubi-florianopolis-3-quartos-99m2/un1xr0mc?tipoTransacao=venda&mediaTab=true"},
+  {id:6,condominio:"Ed. Biarritz",imobiliaria:"Pense imóveis",valor:980000,bairro:"Itacorubi",area:"65,58",quartos:2,vagas:1,suite:null,face:null,cond:null,ocupacao:null,obs:"Pequeno — 2 quartos, 1 vaga (dado da observação)",visitar:null,exact:true,addr:"R. Pastor William Richard Schisler Filho, 504",lat:-27.5761476,lng:-48.5104245,pid:"ChIJV7EfMo04J5URNYLRK9twL00",link:"https://penseimoveisfloripa.com.br/imovel/ita2403/"},
+  {id:7,condominio:"Paris Dakar",imobiliaria:"Meu móvel na ilha / F1",valor:985000,bairro:"Itacorubi",area:"89",quartos:3,vagas:1,suite:null,face:null,cond:"R$ 780,00",ocupacao:null,obs:"Recém reformado, lindo",visitar:"SIM",exact:true,addr:"Rod. Amaro Antônio Viêira, 2371",lat:-27.584937,lng:-48.4971764,pid:"ChIJBfxkzN04J5URsPkmSpCjPDw",link:"https://www.imovelweb.com.br/propriedades/apartamento-residencial-paris-dakar-itacorubi-03-3024321966.html?n_src=Listado&n_pills=Varanda&n_pg=1&n_pos=7"},
+  {id:8,condominio:"Portal dos Açorianos",imobiliaria:"Meu móvel na ilha",valor:990000,bairro:"Itacorubi",area:"90",quartos:3,vagas:2,suite:null,face:null,cond:null,ocupacao:null,obs:"Sem mobília, hobby box",visitar:"SIM",exact:true,addr:"Servidão Amaral Antero Bastos, 29",lat:-27.5775195,lng:-48.5058584,pid:"ChIJZVbgQAA5J5URVXqJUe_g0c8",link:"https://loft.com.br/imovel/apartamento-amaral-antero-bastos-itacorubi-florianopolis-3-quartos-90m2/x8zvb42j?tipoTransacao=venda"},
+  {id:9,condominio:"Alameda View",imobiliaria:"Pense imóveis",valor:995000,bairro:"Córrego Grande",area:"79,5",quartos:2,vagas:2,suite:null,face:null,cond:"R$ 936,00",ocupacao:null,obs:"Hobby box",visitar:"SIM",exact:true,addr:"R. Dresden, 41",lat:-27.5950472,lng:-48.496749,pid:"ChIJy_QG9uc5J5URuYvmtiwglBc",link:"https://imoveis.novovista.com.br/?v2=a2V5PTkzZDAwYjU2ZmJiZThmOWZjODYxNTgzZWM5NjgxNDAxJmNvZD1JVEEzMDAwJmQ9NjQmY3M9MiZtYXBhPU5hbyZiYWlycm9fY29tZXJjaWFsPVNpbSZsb2dpbj1uYW8mc3RhdHVzPVZlbmRhJnB1cnBvc2U9JTVCJTIydmVuZGElMjIlNUQmY29kX2VtPTI5NTM3"},
+  {id:10,condominio:"Metropolitan Park",imobiliaria:"Santa Ilha / F1",valor:998000,bairro:"Itacorubi",area:"101",quartos:3,vagas:2,suite:null,face:"Sul (?)",cond:"R$ 1.268,00",ocupacao:null,obs:"Vinílico, móveis, cozinha com eletros, ar-condicionado",visitar:"SIM",exact:true,addr:"Rod. Amaro Antônio Viêira, 2355",lat:-27.5847691,lng:-48.4970727,pid:"ChIJhUKYwN04J5URZv99baocynI",link:"https://www.chavesnamao.com.br/imovel/apartamento-a-venda-3-quartos-com-garagem-sc-florianopolis-itacorubi-101m2-RS998000/id-39884780/"},
+  {id:11,condominio:"Paris Dakar",imobiliaria:"BM Imobiliária / F1",valor:999000,bairro:"Itacorubi",area:"102",quartos:3,vagas:1,suite:null,face:"Livre",cond:"R$ 920,00",ocupacao:null,obs:"Reforma, face livre, móveis, cozinha",visitar:"SIM",exact:true,addr:"Rod. Amaro Antônio Viêira, 2371",lat:-27.584937,lng:-48.4971764,pid:"ChIJBfxkzN04J5URsPkmSpCjPDw",link:"https://www.imovelweb.com.br/propriedades/apartamento-3-quartos-itacorubi-florianopolis-paris-3028870426.html?duplicated=true&n_src=Listado&n_pills=Varanda&n_pg=1&n_pos=1"},
+  {id:12,condominio:"Saint Tropez",imobiliaria:"Qualité",valor:1000000,bairro:"Itacorubi",area:"69",quartos:2,vagas:2,suite:null,face:null,cond:null,ocupacao:null,obs:"Pequeno, pai e mãe sozinhos",visitar:"Pai e mãe",exact:true,addr:"R. Pastor William Richard Schisler Filho, 856",lat:-27.5760797,lng:-48.5076515,pid:"ChIJ_QJQRu04J5UR0P0uCCV_UmA",link:"https://imoveis.novovista.com.br/?v2=a2V5PTUyOTgxZmZjZjdlNzNmMDI5MjQ5MjRmYmZlMjBlNDc4JmNvZD1STVgzMTA2JmQ9MTEmY3M9MSZtYXBhPVNpbSZiYWlycm9fY29tZXJjaWFsPU5hbyZsb2dpbj1uYW8mc3RhdHVzPVZlbmRhJnB1cnBvc2U9JTVCJTIydmVuZGElMjIlNUQmY29kX2VtPTE1NzY5"},
+  {id:13,condominio:null,imobiliaria:"Pense imóveis",valor:1048000,bairro:"Córrego Grande",area:"79,43",quartos:3,vagas:2,suite:null,face:"Leste/Sul (?)",cond:"R$ 954,18",ocupacao:null,obs:"Vinílico, cozinha, ar-condicionado antigo, 2 varandas",visitar:"SIM",exact:false,addr:null,lat:null,lng:null,pid:null,link:"https://imoveis.novovista.com.br/?v2=a2V5PTkzZDAwYjU2ZmJiZThmOWZjODYxNTgzZWM5NjgxNDAxJmNvZD0xOTc2JmQ9NjQmY3M9MiZtYXBhPU5hbyZiYWlycm9fY29tZXJjaWFsPVNpbSZsb2dpbj1uYW8mc3RhdHVzPVZlbmRhJnB1cnBvc2U9JTVCJTIydmVuZGElMjIlNUQmY29kX2VtPTI5NTM3"},
+  {id:14,condominio:null,imobiliaria:"Pense imóveis",valor:1049000,bairro:"Córrego Grande",area:"82,04",quartos:3,vagas:2,suite:null,face:null,cond:"R$ 697,00",ocupacao:null,obs:"Móveis sob medida, térreo, mesa de vidro quebrada",visitar:"SIM",exact:false,addr:null,lat:null,lng:null,pid:null,link:"https://imoveis.novovista.com.br/?v2=a2V5PTkzZDAwYjU2ZmJiZThmOWZjODYxNTgzZWM5NjgxNDAxJmNvZD0yMTg2JmQ9NjQmY3M9MiZtYXBhPU5hbyZiYWlycm9fY29tZXJjaWFsPVNpbSZsb2dpbj1uYW8mc3RhdHVzPVZlbmRhJnB1cnBvc2U9JTVCJTIydmVuZGElMjIlNUQmY29kX2VtPTI5NTM3"},
+  {id:15,condominio:"Solar de Évora",imobiliaria:"F1 Imobiliária",valor:1081000,bairro:"Itacorubi",area:"90",quartos:2,vagas:null,suite:null,face:"Norte",cond:null,ocupacao:"Proprietário",obs:null,visitar:"SIM",exact:true,addr:"R. Pastor William Richard Schisler Filho, 1128",lat:-27.5777351,lng:-48.5056114,pid:"ChIJWWiBT-w4J5UREjLsq1TWPn0",link:"http://v.imo.bi/ZYF46dVih7LFvH"},
+  {id:16,condominio:null,imobiliaria:"Itacorubi Imóveis",valor:1100000,bairro:"Córrego Grande",area:"86,88",quartos:3,vagas:2,suite:null,face:null,cond:"R$ 722,75",ocupacao:null,obs:"Cozinha pronta, lava-louça, móveis sob medida",visitar:"SIM",exact:false,addr:null,lat:null,lng:null,pid:null,link:"https://imoveis.novovista.com.br/?v2=a2V5PTkzZDAwYjU2ZmJiZThmOWZjODYxNTgzZWM5NjgxNDAxJmNvZD1JVEEyNTcwJmQ9NjQmY3M9MiZtYXBhPU5hbyZiYWlycm9fY29tZXJjaWFsPVNpbSZsb2dpbj1uYW8mc3RhdHVzPVZlbmRhJnB1cnBvc2U9JTVCJTIydmVuZGElMjIlNUQmY29kX2VtPTI5NTM3"},
+  {id:17,condominio:"Plaza Victoria",imobiliaria:"Pense imóveis",valor:1100000,bairro:"Itacorubi",area:null,quartos:2,vagas:2,suite:null,face:null,cond:null,ocupacao:null,obs:"2 quartos, 2 vagas (dado da observação)",visitar:null,exact:true,addr:"Servidão Recanto Verde, 155",lat:-27.5872707,lng:-48.4957298,pid:"ChIJh9p28N44J5URI_ZddA_k1QI",link:"https://penseimoveisfloripa.com.br/imovel/ita2672/"},
+  {id:18,condominio:"Achilles Ceccato",imobiliaria:"Meu móvel na ilha",valor:1150000,bairro:"Itacorubi",area:"94",quartos:3,vagas:2,suite:null,face:null,cond:"R$ 793,00",ocupacao:null,obs:"2 banheiros com ventilação natural, atrás da FIESC",visitar:"SIM",exact:true,addr:"R. Salvatina F. dos Santos, 155",lat:-27.5915596,lng:-48.4925335,pid:"ChIJ__-_Hic5J5URrM0eV_FP9O8",link:"https://loft.com.br/imovel/apartamento-salvatina-feliciana-dos-santos-itacorubi-florianopolis-3-quartos-94m2/gpyzln8f?tipoTransacao=venda"},
+  {id:19,condominio:"Porto do Itacorubi",imobiliaria:"Brognoli",valor:1150000,bairro:"Itacorubi",area:null,quartos:3,vagas:1,suite:null,face:null,cond:null,ocupacao:null,obs:"3 banheiros, cozinha pronta",visitar:"SIM",exact:true,addr:"Rod. Amaro Antônio Viêira, 2593",lat:-27.5867895,lng:-48.4969773,pid:"ChIJ63_daN44J5URf7VacKX_Z6k",link:"https://www.chavesnamao.com.br/imovel/apartamento-a-venda-3-quartos-com-garagem-sc-florianopolis-itacorubi-118m2-RS1150000/id-41400156/?relatedAds=true"},
+  {id:20,condominio:"Sun Village",imobiliaria:"Meu móvel na ilha / F1",valor:1180000,bairro:"Itacorubi",area:"89",quartos:3,vagas:1,suite:null,face:null,cond:"R$ 772,00",ocupacao:null,obs:"Todo novo, reformado, NEMA",visitar:"SIM",exact:true,addr:"R. Prof. Ayrton Roberto de Oliveira, 20",lat:-27.578970,lng:-48.5113852,pid:"ChIJIbxl_PI4J5URWlWF6YO3ri4",link:"https://loft.com.br/imovel/apartamento-prof-ayrton-roberto-de-oliveira-itacorubi-florianopolis-3-quartos-89m2/47h9r9u9?tipoTransacao=venda"},
+  {id:21,condominio:"Bianca Residencial",imobiliaria:"Salete Maria Vilke / F1",valor:1189000,bairro:"Parque São Jorge",area:"103",quartos:3,vagas:2,suite:null,face:null,cond:"R$ 895,00",ocupacao:null,obs:"Cozinha pronta, quartos com recortes estranhos (pequenos)",visitar:"SIM",exact:true,addr:"Av. Buriti, 680",lat:-27.5913813,lng:-48.5001371,pid:"ChIJ4wsfJOA4J5URVCzud_rG5UU",link:"https://www.chavesnamao.com.br/imovel/apartamento-a-venda-3-quartos-com-garagem-sc-florianopolis-itacorubi-145m2-RS1189500/id-39280044/"},
+  {id:22,condominio:null,imobiliaria:"Pense imóveis",valor:1290000,bairro:"Itacorubi",area:"94,2",quartos:3,vagas:2,suite:null,face:null,cond:null,ocupacao:null,obs:"Banheiro social talvez com janela que sai na lavanderia",visitar:"SIM",exact:false,addr:null,lat:null,lng:null,pid:null,link:"https://imoveis.novovista.com.br/?v2=a2V5PTkzZDAwYjU2ZmJiZThmOWZjODYxNTgzZWM5NjgxNDAxJmNvZD1JVEEyNjc3JmQ9NjQmY3M9MiZtYXBhPU5hbyZiYWlycm9fY29tZXJjaWFsPVNpbSZsb2dpbj1uYW8mc3RhdHVzPVZlbmRhJnB1cnBvc2U9JTVCJTIydmVuZGElMjIlNUQmY29kX2VtPTI5NTM3"},
+  {id:23,condominio:null,imobiliaria:"Itacorubi Imóveis",valor:890000,bairro:"Itacorubi",area:null,quartos:3,vagas:1,suite:null,face:null,cond:null,ocupacao:null,obs:"NEMA",visitar:"SIM",exact:false,addr:null,lat:null,lng:null,pid:null,link:"https://www.chavesnamao.com.br/imovel/apartamento-a-venda-3-quartos-com-garagem-sc-florianopolis-itacorubi-91m2-RS890000/id-42523272/"}
+];
+
+const BAIRRO_COR = {"Itacorubi":"#0B6E63","Córrego Grande":"#1D5C8A","Parque São Jorge":"#A66A12"};
+const corBairro = b => BAIRRO_COR[b] || "#5E6E69";
+const brl = n => n.toLocaleString("pt-BR",{style:"currency",currency:"BRL",maximumFractionDigits:0});
+const titulo = a => a.condominio || ("Apartamento • " + a.imobiliaria);
+const esc = s => String(s).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;");
+const fmt1 = v => v.toLocaleString("pt-BR",{minimumFractionDigits:1,maximumFractionDigits:1});
+
+/* ---- Notas (persistidas) ---- */
+const STORE_KEY = "notasApartamentosFloripa";
+let notas = {};
+try { notas = JSON.parse(localStorage.getItem(STORE_KEY)) || {}; } catch(e) { notas = {}; }
+function save(){ try { localStorage.setItem(STORE_KEY, JSON.stringify(notas)); } catch(e){} }
+
+/* ---- Visita (família, persistida) ---- */
+const VKEY = "visitasApartamentosFloripa";
+let visitas = {};
+try { visitas = JSON.parse(localStorage.getItem(VKEY)) || {}; } catch(e) { visitas = {}; }
+function saveV(){ try { localStorage.setItem(VKEY, JSON.stringify(visitas)); } catch(e){} }
+
+const NOMES = {b:"Bianca", c:"Ciro", t:"Tânia"};
+const VISIT = {
+  nao:      {label:"Não visitar",    short:"Não ir",   color:"#B23A2E", icon:"x"},
+  agendar:  {label:"Agendar visita", short:"Agendar",  color:"#0B6E63", icon:"cal"},
+  visitado: {label:"Visitado",       short:"Visitado", color:"#1D5C8A", icon:"check"}
+};
+const VORDER = ["nao","agendar","visitado"];
+
+function media(id){
+  const n = notas[id] || {};
+  const vals = ["b","c","t"].map(k=>n[k]).filter(v=>v!==undefined && v!==null && v!=="" && !isNaN(parseFloat(v))).map(parseFloat);
+  if(!vals.length) return null;
+  return vals.reduce((s,v)=>s+v,0)/vals.length;
+}
+function mediaCor(v){ if(v==null) return "var(--muted)"; if(v>=8) return "#0B6E63"; if(v>=6) return "#8A5A12"; return "#B23A2E"; }
+
+function mapsUrl(a){
+  if(a.exact && a.lat!=null){
+    var u = "https://www.google.com/maps/search/?api=1&query="+a.lat+"%2C"+a.lng;
+    if(a.pid) u += "&query_place_id="+a.pid;
+    return u;
+  }
+  return "https://www.google.com/maps/search/?api=1&query="+encodeURIComponent(a.bairro+", Florianópolis - SC");
+}
+function addrText(a){ return a.exact && a.addr ? a.addr : (a.bairro + ", Florianópolis (aprox.)"); }
+
+const ICON = {
+  bed:'<path d="M2 11h20M2 11V6a2 2 0 0 1 2-2h6v7M22 11v8M2 11v8M2 17h20M6 8h3"/>',
+  car:'<path d="M5 13l1.5-4.2A2 2 0 0 1 8.4 7.5h7.2a2 2 0 0 1 1.9 1.3L19 13M3 17v-2.5a2 2 0 0 1 1.2-1.8L5 13h14l.8-.3A2 2 0 0 1 21 14.5V17a1 1 0 0 1-1 1h-1a1 1 0 0 1-1-1v-1H6v1a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1Z"/><circle cx="7.5" cy="15.5" r=".6"/><circle cx="16.5" cy="15.5" r=".6"/>',
+  ruler:'<path d="M3 16 16 3l5 5L8 21z"/><path d="M7.5 11.5l1.5 1.5M10.5 8.5l1.5 1.5M13.5 5.5l1.5 1.5"/>',
+  pin:'<path d="M12 21s7-5.5 7-11a7 7 0 1 0-14 0c0 5.5 7 11 7 11Z"/><circle cx="12" cy="10" r="2.5"/>',
+  coins:'<ellipse cx="9" cy="7" rx="6" ry="3"/><path d="M3 7v5c0 1.7 2.7 3 6 3M3 12v5c0 1.7 2.7 3 6 3"/><ellipse cx="15" cy="14" rx="6" ry="3"/><path d="M21 14v5c0 1.7-2.7 3-6 3"/>',
+  sun:'<circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/>',
+  key:'<circle cx="8" cy="8" r="4.5"/><path d="m11.2 11.2 7 7M16 16l2-2M18.5 18.5l2-2"/>',
+  note:'<path d="M5 3h10l4 4v14H5z"/><path d="M15 3v4h4M8 12h8M8 16h6"/>',
+  star:'<path d="M12 3l2.6 5.3 5.9.9-4.3 4.1 1 5.8L12 16.9 6.8 19.2l1-5.8L3.5 9.2l5.9-.9z"/>',
+  flag:'<path d="M5 22V4M5 4h13l-2.5 4L18 12H5"/>',
+  cal:'<rect x="3" y="4.5" width="18" height="16" rx="2"/><path d="M3 9h18M8 2.5v4M16 2.5v4"/>',
+  check:'<path d="M20 6 9 17l-5-5"/>',
+  x:'<path d="M6 6l12 12M18 6 6 18"/>',
+  arrow:'<path d="M5 12h14M13 6l6 6-6 6"/>'
+};
+const svg = (k,sz,sw) => '<svg width="'+(sz||16)+'" height="'+(sz||16)+'" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="'+(sw||1.7)+'" stroke-linecap="round" stroke-linejoin="round">'+ICON[k]+'</svg>';
+
+const STATUS = {"SIM":{t:"Visitar",bg:"#0B6E63",fg:"#fff"},"Pai e mãe":{t:"Pais",bg:"#5B4B8A",fg:"#fff"}};
+function statusHtml(a){
+  const v = visitas[a.id];
+  if(v && VISIT[v]){ const s=VISIT[v]; return '<span class="status" style="background:'+s.color+';color:#fff">'+esc(s.label)+'</span>'; }
+  const s = STATUS[a.visitar] || {t:"A avaliar",bg:"#EDEFEC",fg:"#5E6E69"};
+  return '<span class="status" style="background:'+s.bg+';color:'+s.fg+'">'+s.t+'</span>';
+}
+function det(k,label,val){if(!val)return"";return '<li class="det">'+svg(k,16)+'<span><b>'+esc(label)+': </b>'+esc(val)+'</span></li>';}
+
+function segHtml(a){
+  const cur = visitas[a.id];
+  return '<div class="seg-label">'+svg("flag",12,1.8)+' Quer visitar?</div>'+
+    '<div class="seg">'+VORDER.map(k=>{
+      const s=VISIT[k], on=cur===k;
+      return '<button data-visit="'+k+'" data-id="'+a.id+'" class="seg-btn'+(on?" on":"")+'" title="'+esc(s.label)+'"'+
+        (on?' style="background:'+s.color+';border-color:'+s.color+'"':'')+'>'+svg(s.icon,13,1.9)+' '+s.short+'</button>';
+    }).join("")+'</div>';
+}
+
+function notaInput(id,who){
+  const n = notas[id]||{};
+  const val = (n[who]==null?"":n[who]);
+  return '<label class="nota"><span>'+NOMES[who]+'</span>'+
+    '<input type="number" min="0" max="10" step="0.5" inputmode="decimal" placeholder="–" data-nota data-id="'+id+'" data-who="'+who+'" value="'+val+'"></label>';
+}
+
+function cardHtml(a){
+  const acc = corBairro(a.bairro);
+  const m = media(a.id);
+  return ''+
+  '<article class="card" data-card="'+a.id+'">'+
+    '<div class="head" style="border-top:4px solid '+acc+'">'+
+      '<div class="head-top">'+
+        '<span class="bairro" style="color:'+acc+'">'+svg("pin",14)+' '+esc(a.bairro)+'</span>'+
+        statusHtml(a)+
+      '</div>'+
+      '<h2 class="title">'+esc(titulo(a))+'</h2>'+
+      '<p class="agency">'+esc(a.imobiliaria)+'</p>'+
+      '<div class="price">'+brl(a.valor)+'</div>'+
+      '<a class="addr" href="'+mapsUrl(a)+'" target="_blank" rel="noopener noreferrer" title="Abrir no Google Maps">'+
+        svg("pin",15)+'<span class="txt">'+esc(addrText(a))+'</span>'+
+        '<span class="tag">'+svg("pin",11)+' Mapa</span>'+
+      '</a>'+
+      segHtml(a)+
+    '</div>'+
+    '<div class="highs">'+
+      '<div class="high q">'+svg("bed",22,1.9)+'<div><div class="num">'+(a.quartos==null?"—":a.quartos)+'</div><div class="cap">Quartos</div></div></div>'+
+      '<div class="high v">'+svg("car",22,1.9)+'<div><div class="num">'+(a.vagas==null?"—":a.vagas)+'</div><div class="cap">Vagas</div></div></div>'+
+    '</div>'+
+    '<div class="details"><ul>'+
+      det("ruler","Área privativa",a.area?a.area+" m²":null)+
+      det("bed","Suíte",a.suite)+
+      det("coins","Condomínio",a.cond)+
+      det("sun","Face solar",a.face)+
+      det("key","Ocupação",a.ocupacao)+
+      det("note","Obs.",a.obs)+
+    '</ul></div>'+
+    '<div class="notas">'+
+      '<div class="notas-title">'+svg("star",13,1.8)+' Notas (0 a 10)</div>'+
+      '<div class="notas-row">'+notaInput(a.id,"b")+notaInput(a.id,"c")+notaInput(a.id,"t")+'</div>'+
+      '<div class="media">Média <span class="mval" data-media="'+a.id+'" style="color:'+mediaCor(m)+'">'+(m==null?"—":fmt1(m))+'</span></div>'+
+    '</div>'+
+    '<div class="cta-wrap"><a class="cta" href="'+a.link+'" target="_blank" rel="noopener noreferrer">Ver Apartamento '+svg("arrow",18,2)+'</a></div>'+
+  '</article>';
+}
+
+let fBairro="Todos", fQuartos="Todos", fOrdem="preco-asc";
+let fVisita = new Set();   // multi-seleção: nao / agendar / visitado / sem
+
+function buildChips(){
+  const bairros = ["Todos", ...new Set(APTS.map(a=>a.bairro))];
+  document.getElementById("f-bairro").innerHTML = bairros.map(b=>
+    '<button class="chip'+(b===fBairro?" active":"")+'" data-b="'+esc(b)+'" '+
+    (b!=="Todos"&&b===fBairro?'style="background:'+corBairro(b)+';border-color:'+corBairro(b)+'"':'')+'>'+esc(b)+'</button>'
+  ).join("");
+  document.getElementById("f-quartos").innerHTML = ["Todos","2","3"].map(q=>
+    '<button class="chip'+(q===fQuartos?" active":"")+'" data-q="'+q+'">'+q+'</button>'
+  ).join("");
+  const VF = [["agendar","Agendar visita"],["visitado","Visitado"],["nao","Não visitar"],["sem","Sem marcação"]];
+  document.getElementById("f-visita").innerHTML = VF.map(([k,lab])=>{
+    const on = fVisita.has(k);
+    const col = VISIT[k] ? VISIT[k].color : "#5E6E69";
+    return '<button class="chip'+(on?" active":"")+'" data-v="'+k+'"'+(on?' style="background:'+col+';border-color:'+col+'"':'')+'>'+lab+'</button>';
+  }).join("");
+  document.querySelectorAll("[data-b]").forEach(el=>el.onclick=()=>{fBairro=el.dataset.b;render();});
+  document.querySelectorAll("[data-q]").forEach(el=>el.onclick=()=>{fQuartos=el.dataset.q;render();});
+  document.querySelectorAll("[data-v]").forEach(el=>el.onclick=()=>{ const k=el.dataset.v; if(fVisita.has(k)) fVisita.delete(k); else fVisita.add(k); render(); });
+}
+
+function render(){
+  buildChips();
+  let r = APTS.filter(a=>{
+    if(fBairro!=="Todos" && a.bairro!==fBairro) return false;
+    if(fQuartos!=="Todos" && String(a.quartos)!==fQuartos) return false;
+    if(fVisita.size>0){ const v=visitas[a.id]||"sem"; if(!fVisita.has(v)) return false; }
+    return true;
+  });
+  r.sort((x,y)=>{
+    if(fOrdem==="preco-asc")return x.valor-y.valor;
+    if(fOrdem==="preco-desc")return y.valor-x.valor;
+    if(fOrdem==="area-desc")return (parseFloat(String(y.area).replace(",","."))||0)-(parseFloat(String(x.area).replace(",","."))||0);
+    if(fOrdem==="media-desc"){ var mx=media(x.id), my=media(y.id); return (my==null?-1:my)-(mx==null?-1:mx); }
+    return 0;
+  });
+  const grid=document.getElementById("grid"), count=document.getElementById("count");
+  if(r.length===0){
+    grid.innerHTML='<div class="empty">Nenhum imóvel com esses filtros. Ajuste o bairro, os quartos ou a marcação de visita.</div>';
+    count.innerHTML="0 imóveis";
+  }else{
+    const min=Math.min(...r.map(a=>a.valor)), max=Math.max(...r.map(a=>a.valor));
+    count.innerHTML='<strong>'+r.length+'</strong> '+(r.length===1?"imóvel":"imóveis")+' · de '+brl(min)+' a '+brl(max);
+    grid.innerHTML=r.map(cardHtml).join("");
+  }
+}
+
+/* Notas: clamp 0-10, salva e atualiza média ao vivo */
+document.getElementById("grid").addEventListener("input", function(e){
+  const el = e.target;
+  if(!el.matches("input[data-nota]")) return;
+  if(el.value !== ""){
+    let num = parseFloat(el.value.replace(",","."));
+    if(!isNaN(num)){
+      if(num>10){ num=10; el.value=10; }
+      if(num<0){ num=0; el.value=0; }
+    }
+  }
+  const id = el.dataset.id, who = el.dataset.who;
+  notas[id] = notas[id] || {};
+  if(el.value === ""){ delete notas[id][who]; }
+  else { notas[id][who] = parseFloat(el.value.replace(",",".")); }
+  save();
+  const m = media(id);
+  const span = document.querySelector('[data-media="'+id+'"]');
+  if(span){ span.textContent = (m==null?"—":fmt1(m)); span.style.color = mediaCor(m); }
+});
+
+/* Visita: marca/desmarca (família), salva e re-renderiza (reflete selo + filtro) */
+document.getElementById("grid").addEventListener("click", function(e){
+  const btn = e.target.closest("button[data-visit]");
+  if(!btn) return;
+  const id = btn.dataset.id, k = btn.dataset.visit;
+  if(visitas[id] === k){ delete visitas[id]; } else { visitas[id] = k; }
+  saveV();
+  render();
+});
+
+document.getElementById("ordem").addEventListener("change",e=>{fOrdem=e.target.value;render();});
+render();
+</script>
+</body>
+</html>

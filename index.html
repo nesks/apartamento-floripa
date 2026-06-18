@@ -373,7 +373,7 @@ function cardHtml(a){
         corretorHtml(a)+
       '</div>'+
       '<h2 class="title">'+esc(titulo(a))+'</h2>'+
-      '<p class="agency">'+esc(a.imobiliaria)+'</p>'+
+      '<p class="agency">'+esc(a.imobiliaria)+' | #'+a.id+'</p>'+
       '<div class="price">'+brl(a.valor)+'</div>'+
       '<a class="addr" href="'+mapsUrl(a)+'" target="_blank" rel="noopener noreferrer" title="Abrir no Google Maps">'+
         svg("pin",15)+'<span class="txt">'+esc(addrText(a))+'</span>'+

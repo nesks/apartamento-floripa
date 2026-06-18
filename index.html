@@ -114,6 +114,7 @@
       <div class="grp"><span class="lbl">Bairro</span><span id="f-bairro" class="grp"></span></div>
       <div class="grp"><span class="lbl">Quartos</span><span id="f-quartos" class="grp"></span></div>
       <div class="grp"><span class="lbl">Visita</span><span id="f-visita" class="grp"></span></div>
+      <div class="grp"><span class="lbl">Corretor</span><span id="f-corretor" class="grp"></span></div>
       <div class="grp push"><span class="lbl">Ordenar</span>
         <select id="ordem">
           <option value="preco-asc">Menor preço</option>
@@ -165,6 +166,29 @@ const APTS = [
 ];
 
 const BAIRRO_COR = {"Itacorubi":"#0B6E63","Córrego Grande":"#1D5C8A","Parque São Jorge":"#A66A12","João Paulo":"#7A4FA3"};
+
+/* ---- Corretor por imobiliária ---- */
+const CORRETOR = {
+  "Pense imóveis":"Bruna",
+  "Itacorubi Imóveis":"Bruna",
+  "F1 Imobiliária":"Paulo",
+  "Daga / F1":"Paulo",
+  "Meu móvel na ilha / F1":"Paulo",
+  "Meu móvel na ilha":"Paulo",
+  "Santa Ilha / F1":"Paulo",
+  "BM Imobiliária / F1":"Paulo",
+  "Brognoli":"Paulo",
+  "Salete Maria Vilke / F1":"Paulo",
+  "Qualité":"Juliana"
+};
+const CORRETOR_COR = { "Paulo":"#0B6E63", "Bruna":"#9A4C2E", "Juliana":"#5B4B8A" };
+const corretorOf = a => CORRETOR[a.imobiliaria] || "";
+function corretorHtml(a){
+  const nome = corretorOf(a);
+  if(!nome) return "";
+  const col = CORRETOR_COR[nome] || "#5E6E69";
+  return '<span class="status" style="background:'+col+';color:#fff">'+esc(nome)+'</span>';
+}
 const corBairro = b => BAIRRO_COR[b] || "#5E6E69";
 const brl = n => n.toLocaleString("pt-BR",{style:"currency",currency:"BRL",maximumFractionDigits:0});
 const titulo = a => a.condominio || ("Apartamento • " + a.imobiliaria);
@@ -303,7 +327,7 @@ function cardHtml(a){
     '<div class="head" style="border-top:4px solid '+acc+'">'+
       '<div class="head-top">'+
         '<span class="bairro" style="color:'+acc+'">'+svg("pin",14)+' '+esc(a.bairro)+'</span>'+
-        statusHtml(a)+
+        corretorHtml(a)+
       '</div>'+
       '<h2 class="title">'+esc(titulo(a))+'</h2>'+
       '<p class="agency">'+esc(a.imobiliaria)+'</p>'+
@@ -337,6 +361,7 @@ function cardHtml(a){
 
 let fBairro="Todos", fQuartos="Todos", fOrdem="preco-asc";
 let fVisita = new Set();   // multi-seleção: nao / agendar / visitado / sem
+let fCorretor = new Set(); // multi-seleção por corretor (+ "sem")
 
 function buildChips(){
   const bairros = ["Todos", ...new Set(APTS.map(a=>a.bairro))];
@@ -356,6 +381,16 @@ function buildChips(){
   document.querySelectorAll("[data-b]").forEach(el=>el.onclick=()=>{fBairro=el.dataset.b;render();});
   document.querySelectorAll("[data-q]").forEach(el=>el.onclick=()=>{fQuartos=el.dataset.q;render();});
   document.querySelectorAll("[data-v]").forEach(el=>el.onclick=()=>{ const k=el.dataset.v; if(fVisita.has(k)) fVisita.delete(k); else fVisita.add(k); render(); });
+  const corretores = Array.from(new Set(APTS.map(corretorOf).filter(Boolean))).sort();
+  const temSem = APTS.some(a=>!corretorOf(a));
+  const CF = corretores.concat(temSem ? ["(sem)"] : []);
+  document.getElementById("f-corretor").innerHTML = CF.map(k=>{
+    const on = fCorretor.has(k);
+    const col = CORRETOR_COR[k] || "#5E6E69";
+    const lab = k==="(sem)" ? "Sem corretor" : k;
+    return '<button class="chip'+(on?" active":"")+'" data-cor="'+esc(k)+'"'+(on?' style="background:'+col+';border-color:'+col+'"':'')+'>'+esc(lab)+'</button>';
+  }).join("");
+  document.querySelectorAll("[data-cor]").forEach(el=>el.onclick=()=>{ const k=el.dataset.cor; if(fCorretor.has(k)) fCorretor.delete(k); else fCorretor.add(k); render(); });
 }
 
 function render(){
@@ -364,6 +399,7 @@ function render(){
     if(fBairro!=="Todos" && a.bairro!==fBairro) return false;
     if(fQuartos!=="Todos" && String(a.quartos)!==fQuartos) return false;
     if(fVisita.size>0){ const v=visitas[a.id]||"sem"; if(!fVisita.has(v)) return false; }
+    if(fCorretor.size>0){ const c=corretorOf(a)||"(sem)"; if(!fCorretor.has(c)) return false; }
     return true;
   });
   r.sort((x,y)=>{

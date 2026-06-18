@@ -95,6 +95,10 @@
 
   .card{position:relative;display:flex;flex-direction:column;background:var(--card);border:1px solid var(--line);border-radius:18px;overflow:hidden;box-shadow:0 1px 2px rgba(20,40,33,.04),0 12px 28px -18px rgba(20,40,33,.25);transition:transform .2s,box-shadow .2s}
   /* Estado vendido: faixa diagonal + véu de esmaecimento */
+  .card-photo{position:relative;width:100%;aspect-ratio:3/2;background:#E1E7E3;overflow:hidden;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:7px;color:var(--muted)}
+  .card-photo img{width:100%;height:100%;object-fit:cover;display:block}
+  .card-photo.nophoto{font-size:12px;font-weight:700;letter-spacing:.05em;text-transform:uppercase}
+  .card-photo.nophoto svg{opacity:.45}
   .veil{position:absolute;inset:0;background:rgba(247,249,248,.62);z-index:2;display:none;pointer-events:none}
   .ribbon{position:absolute;top:18px;right:-40px;width:160px;transform:rotate(45deg);background:#B23A2E;color:#fff;text-align:center;text-transform:uppercase;font-size:11px;font-weight:800;letter-spacing:.14em;padding:5px 0;box-shadow:0 4px 12px -3px rgba(0,0,0,.35);z-index:4;display:none}
   .card.vendido .veil{display:block}
@@ -262,7 +266,7 @@ const APTS = [
   {id:24,condominio:"Paris Dakar",imobiliaria:"F1 Imobiliária",valor:995000,bairro:"Itacorubi",area:"74,95",areaTotal:"101,94",quartos:3,vagas:2,suite:"1 suíte",banheiros:2,face:null,cond:"R$ 950,00",ocupacao:null,obs:"2 banheiros",visitar:null,exact:true,addr:"Rod. Amaro Antônio Viêira, 2371",lat:-27.584937,lng:-48.4971764,pid:"ChIJBfxkzN04J5URsPkmSpCjPDw",link:"https://imoveis.novovista.com.br/?v2=a2V5PTZiYzc3N2IwMTRlNTRhNTY4ZmJjOWM4OTZiNzFmZmMwJmNvZD0xOTU5MzA4JmQ9NjU3JmNzPTEmbWFwYT1OYW8mYmFpcnJvX2NvbWVyY2lhbD1OYW8mbG9naW49bmFvJnN0YXR1cz1WZW5kYSZwdXJwb3NlPSU1QiUyMnZlbmRhJTIyJTVEJmNvZF9lbT0xODEyMg"},
   {id:25,condominio:"Boulevard Oriano",imobiliaria:"F1 Imobiliária",valor:850000,bairro:"João Paulo",area:"80",quartos:3,vagas:2,suite:null,face:null,cond:"R$ 877,00 + rateio R$ 209,00",ocupacao:null,obs:"Com pet place, mercadinho, vista livre e pôr do sol, reformado, quinto andar",visitar:null,exact:true,addr:"Rodovia João Paulo, 710",lat:-27.5662603,lng:-48.5155495,pid:"ChIJY3MS-IY4J5URD7bs5i2lUmk",link:"https://quartier.remax.com.br/pt-br/imoveis/apartamento/venda/florianopolis/710-rodovia-joao-paulo/590441064-23"},
   {id:26,condominio:"Solar da Primavera",imobiliaria:"Pense imóveis / Itacorubi Imóveis",corretor:"Bruna",valor:1100000,bairro:"Córrego Grande",area:"83,17",areaTotal:"125,4",quartos:2,vagas:2,suite:"2 suítes",banheiros:3,face:"Leste e Sul",cond:"R$ 1.049,49",ocupacao:null,obs:"3 banheiros, hobby box, sacada com reiki",visitar:null,exact:true,addr:"R. Pireneus, 86",lat:-27.6042303,lng:-48.5009955,pid:"ChIJz1VTUxY5J5URqmPhLGzlwSI",link:"http://v.imo.bi/ZYDLjkVih7p4J9"},
-  {id:27,condominio:"Luiza Napoli",imobiliaria:"Qualité",valor:780000,bairro:"Itacorubi",area:"73,40",areaTotal:"95,33",quartos:2,vagas:1,suite:0,banheiros:1,face:"Leste, Norte e Oeste",cond:null,ocupacao:null,obs:"Hobby box, quinto andar, vista livre para o verde, aceita proposta até 750 mil",visitar:null,exact:true,addr:"R. Pastor William Richard Schisler Filho, 980",lat:-27.5768002,lng:-48.5068613,pid:"ChIJMT_RGu04J5URn-mF7QWEt2k",link:null}
+  {id:27,condominio:"Luiza Napoli",imobiliaria:"Qualité",valor:780000,bairro:"Itacorubi",area:"73,40",areaTotal:"95,33",quartos:2,vagas:1,suite:0,banheiros:1,face:"Leste, Norte e Oeste",cond:null,ocupacao:null,obs:"Hobby box, quinto andar, vista livre para o verde, aceita proposta até 750 mil",visitar:null,exact:true,addr:"R. Pastor William Richard Schisler Filho, 980",lat:-27.5768002,lng:-48.5068613,pid:"ChIJMT_RGu04J5URn-mF7QWEt2k",link:null,foto:"img/27.jpg"}
 ];
 
 const BAIRRO_COR = {"Itacorubi":"#0B6E63","Córrego Grande":"#1D5C8A","Parque São Jorge":"#A66A12","João Paulo":"#7A4FA3"};
@@ -401,6 +405,7 @@ const ICON = {
   check:'<path d="M20 6 9 17l-5-5"/>',
   x:'<path d="M6 6l12 12M18 6 6 18"/>',
   bath:'<path d="M4 12h16v3a4 4 0 0 1-4 4H8a4 4 0 0 1-4-4z"/><path d="M6 12V6.5A2.5 2.5 0 0 1 8.5 4a2.3 2.3 0 0 1 2 1.2"/><path d="M6 19l-1.2 2M18 19l1.2 2"/>',
+  camera:'<path d="M3 8a2 2 0 0 1 2-2h2l1.5-2h7L19 6h0a2 2 0 0 1 2 2v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><circle cx="12" cy="12.5" r="3.5"/>',
   arrow:'<path d="M5 12h14M13 6l6 6-6 6"/>'
 };
 const svg = (k,sz,sw) => '<svg width="'+(sz||16)+'" height="'+(sz||16)+'" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="'+(sw||1.7)+'" stroke-linecap="round" stroke-linejoin="round">'+ICON[k]+'</svg>';
@@ -437,6 +442,7 @@ function cardHtml(a){
   return ''+
   '<article class="card'+(vendidos[a.id]?' vendido':'')+'" data-card="'+a.id+'">'+
     '<div class="veil"></div><div class="ribbon">Vendido</div>'+
+    '<div class="card-photo'+(a.foto?'':' nophoto')+'">'+(a.foto?'<img src="'+a.foto+'" alt="'+esc(titulo(a))+'" loading="lazy" onerror="this.parentNode.classList.add(\'nophoto\');this.remove();">':svg("camera",24,1.6)+'<span>Sem foto</span>')+'</div>'+
     '<div class="head" style="border-top:4px solid '+acc+'">'+
       '<div class="head-top">'+
         '<span class="bairro" style="color:'+acc+'">'+svg("pin",14)+' '+esc(a.bairro)+'</span>'+

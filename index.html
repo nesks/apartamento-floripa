@@ -70,17 +70,6 @@
 
   .card{display:flex;flex-direction:column;background:var(--card);border:1px solid var(--line);border-radius:18px;overflow:hidden;box-shadow:0 1px 2px rgba(20,40,33,.04),0 12px 28px -18px rgba(20,40,33,.25);transition:transform .2s,box-shadow .2s}
   .card:hover{transform:translateY(-3px);box-shadow:0 1px 2px rgba(20,40,33,.05),0 20px 40px -20px rgba(20,40,33,.35)}
-
-  .gal{position:relative;background:#0A1816;aspect-ratio:4/3;overflow:hidden}
-  .gal-img{width:100%;height:100%;object-fit:cover;display:block;background:#0A1816;transition:opacity .15s}
-  .gal-nav{position:absolute;top:50%;transform:translateY(-50%);width:36px;height:36px;display:flex;align-items:center;justify-content:center;background:rgba(0,0,0,.5);color:#fff;border:none;border-radius:999px;cursor:pointer;font-size:20px;line-height:1;font-family:inherit;opacity:0;transition:opacity .15s,background .15s;backdrop-filter:blur(4px)}
-  .card:hover .gal-nav{opacity:1}
-  .gal-nav:hover{background:rgba(0,0,0,.75)}
-  .gal-nav.prev{left:8px}
-  .gal-nav.next{right:8px}
-  .gal-count{position:absolute;bottom:8px;right:8px;background:rgba(0,0,0,.55);color:#fff;font-size:11px;font-weight:700;padding:4px 9px;border-radius:999px;letter-spacing:.04em;backdrop-filter:blur(4px)}
-  .gal-empty{display:flex;align-items:center;justify-content:center;color:#7B928C;font-size:11.5px;font-weight:700;letter-spacing:.06em;text-transform:uppercase}
-  @media (hover:none){ .gal-nav{opacity:1;background:rgba(0,0,0,.4)} }
   .head{padding:16px 18px 14px}
   .head-top{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:12px}
   .bairro{display:inline-flex;align-items:center;gap:6px;font-size:12px;font-weight:700}
@@ -195,32 +184,6 @@
   <footer>Dados da planilha “Apartamentos Floripa”. Endereços exatos via Google Maps quando o condomínio é nomeado; demais com localização aproximada pelo bairro. Notas e marcações de visita são salvas localmente no seu navegador.</footer>
 
 <script>
-/* ---- Fotos remotas (Vista/Pense/Novovista/F1) ---- */
-const VH = 'https://cdn.vistahost.com.br/';
-function _v(p, s, x){ return s.map(h => VH + p + h + x); }
-const FOTOS_REMOTAS = {
-  1: _v("cli22054/vista.imobi/fotos/4567/i7k262crC6C4n8419QW_45676926f6",["5fc16c7","62ede4d","663d55f","696346c","6e0d196","72617b7","7745c82","7c176de","805e1af","84503e0","891ebc9","8d712e1","91e7088","9598f20","9937129","9c8471e","a127568","a4e06a2","a88d3be","abc698e","afd94bc","b85e29b","bce0e5a","c115d0f","c5b2f59"],".jpg"),
-  2: _v("charlesd/vista.imobi/fotos/4959/i",["526Ve217B77La32DK_49596a26db298d368","526Ve217B77La32DK_49596a26db2c1d691","526Ve217B77La32DK_49596a26db2ec9bf2","526Ve217B77La32DK_49596a26db32225e9","526Ve217B77La32DK_49596a26db3495361","526Ve217B77La32DK_49596a26db371b9f5","526Ve217B77La32DK_49596a26db396b98b","526Ve217B77La32DK_49596a26db3ba283e","526Ve217B77La32DK_49596a26db41de300","526Ve217B77La32DK_49596a26db44c9b85","526Ve217B77La32DK_49596a26db473b36d","526Ve217B77La32DK_49596a26db49cb775","526Ve217B77La32DK_49596a26db4d1dd63","526Ve217B77La32DK_49596a26db4f7843a","m415QOg9o341421_495969f3b722b78c7","m415QOg9o341421_495969f3b73711b91","m415QOg9o341421_495969f3b73a28ef3","m415QOg9o341421_495969f3b73d69146","m415QOg9o341421_495969f3b740a2ea9","m415QOg9o341421_495969f3b7443942b","m415QOg9o341421_495969f3b747901a1","m415QOg9o341421_495969f3b74ae6d00","m415QOg9o341421_495969f3b74e6edf6","m415QOg9o341421_495969f3b751a890d","m415QOg9o341421_495969f3b754c5ab8"],".jpg"),
-  3: _v("cia18122/vista.imobi/fotos/28381/i7b8L5_2838169c6a1",["1d03e16","204a872","2337047","25e0c7f","28bd545","2ccff00","300ec6f","330850b","35d13be","38d628c","3be9fde","3ec53a0","41bd888","449f46d","48058ce","4b41065","4f3ed68","51de2f1","5665daa","5ac7e92","5fbf0c5","64aaebf","942aaf5","97907b4","9a7b1a2","9d9a87a","a0e1e62","a3bbff5","a6b3e34","a97d663","ad0367f","afd72a7"],".jpg"),
-  4: _v("cia18122/vista.imobi/fotos/24730/i5I684E194V69j77ZPS_24730687ab",["4ac648ad","4afd20b0","4b363bfe","4b691459","4b9ca829","4bcbff55","4c1a8deb","4c48cec8","4c822a47","4cb71229","4cf4809d","4d243c54","4d5277af","4d827416","4db604a4","4de1b8fc","4e149dcb","4e47b6f2","4e800e55","4eaeef26","4ee649c0","4f13d8d4","4f565445","4f8cdfc1","4fe389e0","5014616e","50577461","50a87fe4","50da6a0f","511849ab","5157cb4a","5194795a"],".jpg"),
-  6: _v("charlesd/vista.imobi/fotos/4308/igE356f2Z1yN95Ec5_430868aa1",["70e11db4","7116cdae","7148c255","71735965","71ac7601","71e85b98","72239808","725ecfe8","729bad90","72d2745c","730e5dcd","7346cc9f","73818202","73b8b390","73f76b2b","74690197","74a4d38f","74e09df5","7517f58a","7551f52a","758ac614","75cbc84b","7d60eb0d","7d87e25d","7ddc60fc","7f9958b8","7fc61697","7fed6b63","800f328f","8037ddec"],".jpg"),
-  9: _v("charlesd/vista.imobi/fotos/5060/iAQ4U51b557_50606a26e2",["2e96df2","312cf16","33e8b2d","38de712","3d73228","4249524","474bdbe","4adacd7","519cb75","554346c","5968919","5e53a18","62a004f","66deb63","6baccaf","6fa86dc","7385d6b","781b158","7d12424","82007df","8574b39","8964c01","8d460e2","935fd00","9888f8d","9e55453","a4e8cd3","ab470a2","b060f05","b5a3e2c"],".jpg"),
-  12: _v("qualiten/vista.imobi/fotos/3106/iBs14l_3106693c1c",["2a0b565","2cd0909","2faf1dd","3333ff1","368f9a7","391a2a7","3c4a58e","3ed9c6d","41eb05b","4472e6b","46962bb","49387e8","4bef3e2","4e9536b","50e59a3","52ed128","55bbea9","58a6288","5b573f0","5dd5eb3","6116fdb","63740c3","65cbef6","68e7d21","6bc6a97","6f1dec9","718323a","74711eb","76d9603","7955905","7c7de23","7f3e441","8244c90","8522ae3","8792c5b","8a48234"],".jpg"),
-  13: _v("charlesd/vista.imobi/fotos/1976/iH43fTYmJ1S4E4LPCO1b_197667599",["7acd8e35","7e1e01ab","7f88eeb2","8a32e288","8d357a8d","8f033f15","91f7d353","94aa1a89","96548971","99692707","9c072c2f","9e272e70","9f21c941","a12892f6","a3403dc3","a5c418e4","a6aad936","a845f87c","aa5101cc"],".jpg"),
-  14: _v("charlesd/vista.imobi/fotos/4028/i1a136_402869cd6",["1b8656a8","1bb08584","1bdb35e4","1c070cc0","1c2dc82f","1c5852d2","1c85f2e1","1cb5e29a","1ce7f4a1","1d18168d","1d4a8a81","1d78b193","1db2758f","1df1e3fa","1e2c9e65","1e7458ff","1eb293dc","1ef1a184","1f31f1b1","1f63c51a","1fb33e53","1fe00ef3","2037e9bc","20741bcd","20def57e","21499acb","217a4a03","21a6b672","21d28736","21fd28f1","22245194","2248197d","22952f60","22b92f52","22e07fbf","2304e32b","232cfcda","2359ecc9","2381e028","23ad4aa5","23f85090","2422dfa9"],".jpg"),
-  16: _v("charlesd/vista.imobi/fotos/4547/i7b3Z96cehfNJ_4547691b68",["5591272","594faaf","5d17fc3","6038626","639cdb1","668e7b8","69e3dca","6e48792","71351da","73bd025","7713881","7aa9717","7db77ce","80f0789","8446799","86d8203","89d912f","8d20479","8fb1a9c","92e011f","9591637","984cecf","9b53b51","9e9aae7"],".jpg"),
-  17: _v("charlesd/vista.imobi/fotos/4683/iVN377Q565_46836980d",["60c686f1","60f8c69e","61318610","61609f89","61928f55","61c1932d","61ed77bc","621c906c","6257f1fa","62a4af60","62da9940","6317a3f4","63430da3","63732bd3","639aed2a","63d0616b","6402a6b7","643a7b4a","6477bb8b","64c180bc","64f251c3","651d43ca","6c0adab1","6c425965","6c6f0af3","6c9c2b70","6cd12ec4","6d00b97b","6d32bc5b","6d5e301c","6d930172","6db93fe8","6deb4e64","6e162e73","6e3f1d9c","6e6e24ee","6ea1a164","6ed79e5c","6f0b6511","6f3ba163","6f7e159e","6fac4094","6fda0c7c","700c8d44","703f2b24","70768da2","709df942","70c7e7a6","70f7b15a","71274756","71b38b3d"],".jpg"),
-  22: _v("charlesd/vista.imobi/fotos/4688/iG57RB37R44Y5KA_4688698386",["7a6cbc9","7d67e16","80b433a","838e8be","8707230","8b9774a","9046d6c","93b6958","97071ab","a01a70c","a35cbde","a67674e","ac96e22","afe067d","ba44fb3","bdb1aae","c0a266a","c66bbc2","c92b8da","cc9f998","cf82d81","d57d050","d8aea70","dbc37f2","dea833f","e15db52","e53dfe7","e8aae2f","ec0e463","efb4aa0"],".jpg"),
-  24: _v("cia18122/vista.imobi/fotos/27364/i6GxBR2674RT4_27364695d5f",["09d2f39","0d0aaeb","0fbbee3","122a2e1","14a1205","174fb7f","19d9054","5a574f0","5ca6f65","6b1cdf6","6e4123d","7115bbc","73c3bfd","763f1b2","7868d92","7b23c4e","7e58870","8099f6c","83c97f5","862e2d3","88cda8f"],".jpg"),
-};
-/* ---- Fotos baixadas localmente em imgs/{id}/{NN}.jpg ---- */
-const FOTOS_LOCAIS = {5:29, 7:31, 8:34, 10:30, 11:26, 18:37, 19:30, 20:31, 21:23, 23:30, 25:44};
-function fotosOf(id){
-  if(FOTOS_REMOTAS[id]) return FOTOS_REMOTAS[id];
-  const n = FOTOS_LOCAIS[id]; if(!n) return [];
-  return Array.from({length:n}, (_,i)=>'imgs/'+id+'/'+String(i+1).padStart(2,'0')+'.jpg');
-}
-
 const APTS = [
   {id:1,condominio:"Bela Vista (Roberto)",imobiliaria:"Pense imóveis",valor:830000,bairro:"Itacorubi",area:"88,76",quartos:2,vagas:2,suite:"2 suítes",face:null,cond:null,ocupacao:"Proprietário",obs:"2 suítes, hobby box grande",visitar:"SIM",exact:true,addr:"Servidão Feliciano Martins Vieira, 138",lat:-27.5737796,lng:-48.5097034,pid:"ChIJ_Zlrno04J5URyHiGnGokzEc",link:"https://imoveis.novovista.com.br/?v2=a2V5PTkzZDAwYjU2ZmJiZThmOWZjODYxNTgzZWM5NjgxNDAxJmNvZD0yNTQxJmQ9NjQmY3M9MiZtYXBhPU5hbyZiYWlycm9fY29tZXJjaWFsPVNpbSZsb2dpbj1uYW8mc3RhdHVzPVZlbmRhJnB1cnBvc2U9JTVCJTIydmVuZGElMjIlNUQmY29kX2VtPTIyMDU0"},
   {id:2,condominio:"Achilles Ceccato",imobiliaria:"Pense imóveis",valor:835000,bairro:"Itacorubi",area:"77,15",quartos:2,vagas:2,suite:null,face:null,cond:null,ocupacao:null,obs:"Cozinha pronta, móveis sob medida",visitar:"Pai e mãe",exact:false,addr:null,lat:null,lng:null,pid:null,link:"https://penseimoveisfloripa.com.br/imovel/ita2915/"},
@@ -228,10 +191,10 @@ const APTS = [
   {id:4,condominio:"Green Village",imobiliaria:"Daga / F1",valor:1390000,bairro:"Itacorubi",area:"84",quartos:3,vagas:2,suite:null,face:null,cond:"R$ 1.128,77",ocupacao:null,obs:"3 quartos, pouco sol, NEMA",visitar:"SIM",exact:true,addr:"R. Antônio Costa, 11",lat:-27.5797521,lng:-48.5114292,pid:"ChIJ10vCVvI4J5UR7N4CMStp3Z4",link:"https://f1ciaimobiliaria.com.br/imoveis/venda-apartamento-green-village-residence-de-3-quartos-no-bairro-itacorubi-florianopolis-1957252/"},
   {id:5,condominio:"Mont Real",imobiliaria:"Meu móvel na ilha / F1",valor:970000,bairro:"Itacorubi",area:"99",quartos:2,vagas:2,suite:null,face:null,cond:"R$ 881,00",ocupacao:null,obs:"Cozinha rústica",visitar:"SIM",exact:true,addr:"Rod. Amaro Antônio Viêira, 2651",lat:-27.5872714,lng:-48.4966824,pid:"ChIJY1X2aN44J5URAarOWSHcrYQ",link:"https://loft.com.br/imovel/apartamento-amaro-antonio-vieira-itacorubi-florianopolis-3-quartos-99m2/un1xr0mc?tipoTransacao=venda&mediaTab=true"},
   {id:6,condominio:"Ed. Biarritz",imobiliaria:"Pense imóveis",valor:980000,bairro:"Itacorubi",area:"65,58",quartos:2,vagas:1,suite:null,face:null,cond:null,ocupacao:null,obs:"Pequeno — 2 quartos, 1 vaga (dado da observação)",visitar:null,exact:true,addr:"R. Pastor William Richard Schisler Filho, 504",lat:-27.5761476,lng:-48.5104245,pid:"ChIJV7EfMo04J5URNYLRK9twL00",link:"https://penseimoveisfloripa.com.br/imovel/ita2403/"},
-  {id:7,condominio:"Paris Dakar",imobiliaria:"Meu móvel na ilha / F1",valor:985000,bairro:"Itacorubi",area:"89",quartos:3,vagas:1,suite:null,face:null,cond:"R$ 780,00",ocupacao:null,obs:"Recém reformado, lindo",visitar:"SIM",exact:true,addr:"Rod. Amaro Antônio Viêira, 2371",lat:-27.584937,lng:-48.4971764,pid:"ChIJBfxkzN04J5URsPkmSpCjPDw",link:"https://www.imovelweb.com.br/propriedades/apartamento-residencial-paris-dakar-itacorubi-03-3024321966.html?n_src=Listado&n_pills=Varanda&n_pg=1&n_pos=7"},
+  {id:7,condominio:"Paris Dakar | Reformado",imobiliaria:"Meu móvel na ilha / F1",valor:985000,bairro:"Itacorubi",area:"89",quartos:3,vagas:1,suite:null,face:null,cond:"R$ 780,00",ocupacao:null,obs:"Recém reformado, lindo",visitar:"SIM",exact:true,addr:"Rod. Amaro Antônio Viêira, 2371",lat:-27.584937,lng:-48.4971764,pid:"ChIJBfxkzN04J5URsPkmSpCjPDw",link:"https://www.imovelweb.com.br/propriedades/apartamento-residencial-paris-dakar-itacorubi-03-3024321966.html?n_src=Listado&n_pills=Varanda&n_pg=1&n_pos=7"},
   {id:8,condominio:"Portal dos Açorianos",imobiliaria:"Meu móvel na ilha",valor:990000,bairro:"Itacorubi",area:"90",quartos:3,vagas:2,suite:null,face:null,cond:null,ocupacao:null,obs:"Sem mobília, hobby box",visitar:"SIM",exact:true,addr:"Servidão Amaral Antero Bastos, 29",lat:-27.5775195,lng:-48.5058584,pid:"ChIJZVbgQAA5J5URVXqJUe_g0c8",link:"https://loft.com.br/imovel/apartamento-amaral-antero-bastos-itacorubi-florianopolis-3-quartos-90m2/x8zvb42j?tipoTransacao=venda"},
   {id:9,condominio:"Alameda View",imobiliaria:"Pense imóveis",valor:995000,bairro:"Córrego Grande",area:"79,5",quartos:2,vagas:2,suite:null,face:null,cond:"R$ 936,00",ocupacao:null,obs:"Hobby box",visitar:"SIM",exact:true,addr:"R. Dresden, 41",lat:-27.5950472,lng:-48.496749,pid:"ChIJy_QG9uc5J5URuYvmtiwglBc",link:"https://imoveis.novovista.com.br/?v2=a2V5PTkzZDAwYjU2ZmJiZThmOWZjODYxNTgzZWM5NjgxNDAxJmNvZD1JVEEzMDAwJmQ9NjQmY3M9MiZtYXBhPU5hbyZiYWlycm9fY29tZXJjaWFsPVNpbSZsb2dpbj1uYW8mc3RhdHVzPVZlbmRhJnB1cnBvc2U9JTVCJTIydmVuZGElMjIlNUQmY29kX2VtPTI5NTM3"},
-  {id:10,condominio:"Metropolitan Park",imobiliaria:"Santa Ilha / F1",valor:998000,bairro:"Itacorubi",area:"101",quartos:3,vagas:2,suite:null,face:"Sul (?)",cond:"R$ 1.268,00",ocupacao:null,obs:"Vinílico, móveis, cozinha com eletros, ar-condicionado",visitar:"SIM",exact:true,addr:"Rod. Amaro Antônio Viêira, 2355",lat:-27.5847691,lng:-48.4970727,pid:"ChIJhUKYwN04J5URZv99baocynI",link:"https://www.chavesnamao.com.br/imovel/apartamento-a-venda-3-quartos-com-garagem-sc-florianopolis-itacorubi-101m2-RS998000/id-39884780/"},
+  {id:10,condominio:"Paris Dakar",imobiliaria:"Santa Ilha / F1",valor:998000,bairro:"Itacorubi",area:"101",quartos:3,vagas:2,suite:null,face:"Sul (?)",cond:"R$ 1.268,00",ocupacao:null,obs:"Vinílico, móveis, cozinha com eletros, ar-condicionado",visitar:"SIM",exact:true,addr:"Rod. Amaro Antônio Viêira, 2355",lat:-27.5847691,lng:-48.4970727,pid:"ChIJhUKYwN04J5URZv99baocynI",link:"https://www.chavesnamao.com.br/imovel/apartamento-a-venda-3-quartos-com-garagem-sc-florianopolis-itacorubi-101m2-RS998000/id-39884780/"},
   {id:11,condominio:"Paris Dakar",imobiliaria:"BM Imobiliária / F1",valor:999000,bairro:"Itacorubi",area:"102",quartos:3,vagas:1,suite:null,face:"Livre",cond:"R$ 920,00",ocupacao:null,obs:"Reforma, face livre, móveis, cozinha",visitar:"SIM",exact:true,addr:"Rod. Amaro Antônio Viêira, 2371",lat:-27.584937,lng:-48.4971764,pid:"ChIJBfxkzN04J5URsPkmSpCjPDw",link:"https://www.imovelweb.com.br/propriedades/apartamento-3-quartos-itacorubi-florianopolis-paris-3028870426.html?duplicated=true&n_src=Listado&n_pills=Varanda&n_pg=1&n_pos=1"},
   {id:12,condominio:"Saint Tropez",imobiliaria:"Qualité",valor:1000000,bairro:"Itacorubi",area:"69",quartos:2,vagas:2,suite:null,face:null,cond:null,ocupacao:null,obs:"Pequeno, pai e mãe sozinhos",visitar:"Pai e mãe",exact:true,addr:"R. Pastor William Richard Schisler Filho, 856",lat:-27.5760797,lng:-48.5076515,pid:"ChIJ_QJQRu04J5UR0P0uCCV_UmA",link:"https://imoveis.novovista.com.br/?v2=a2V5PTUyOTgxZmZjZjdlNzNmMDI5MjQ5MjRmYmZlMjBlNDc4JmNvZD1STVgzMTA2JmQ9MTEmY3M9MSZtYXBhPVNpbSZiYWlycm9fY29tZXJjaWFsPU5hbyZsb2dpbj1uYW8mc3RhdHVzPVZlbmRhJnB1cnBvc2U9JTVCJTIydmVuZGElMjIlNUQmY29kX2VtPTE1NzY5"},
   {id:13,condominio:"Edifício Villa Brunello",imobiliaria:"Pense imóveis",valor:1048000,bairro:"Córrego Grande",area:"79,43",quartos:3,vagas:2,suite:null,face:"Leste e Norte",cond:"R$ 954,18",ocupacao:null,obs:"Vinílico, cozinha, ar-condicionado antigo, 2 varandas",visitar:"SIM",exact:false,addr:null,lat:null,lng:null,pid:null,link:"https://imoveis.novovista.com.br/?v2=a2V5PTkzZDAwYjU2ZmJiZThmOWZjODYxNTgzZWM5NjgxNDAxJmNvZD0xOTc2JmQ9NjQmY3M9MiZtYXBhPU5hbyZiYWlycm9fY29tZXJjaWFsPVNpbSZsb2dpbj1uYW8mc3RhdHVzPVZlbmRhJnB1cnBvc2U9JTVCJTIydmVuZGElMjIlNUQmY29kX2VtPTI5NTM3"},
@@ -403,23 +366,11 @@ function notaInput(id,who){
     '<input type="number" min="0" max="10" step="0.5" inputmode="decimal" placeholder="–" data-nota data-id="'+id+'" data-who="'+who+'" value="'+val+'"></label>';
 }
 
-function galHtml(a){
-  const fotos = fotosOf(a.id);
-  if(!fotos.length) return '<div class="gal gal-empty">Sem fotos</div>';
-  return '<div class="gal" data-gal="'+a.id+'" data-i="0">'+
-    '<img class="gal-img" src="'+fotos[0]+'" loading="lazy" alt="Foto '+a.id+'">'+
-    (fotos.length>1 ? '<button class="gal-nav prev" data-gal-nav="-1" aria-label="Anterior">&#8249;</button>'+
-      '<button class="gal-nav next" data-gal-nav="1" aria-label="Próxima">&#8250;</button>' : '')+
-    '<span class="gal-count">1 / '+fotos.length+'</span>'+
-  '</div>';
-}
-
 function cardHtml(a){
   const acc = corBairro(a.bairro);
   const m = media(a.id);
   return ''+
   '<article class="card" data-card="'+a.id+'">'+
-    galHtml(a)+
     '<div class="head" style="border-top:4px solid '+acc+'">'+
       '<div class="head-top">'+
         '<span class="bairro" style="color:'+acc+'">'+svg("pin",14)+' '+esc(a.bairro)+'</span>'+
@@ -541,23 +492,6 @@ document.getElementById("grid").addEventListener("input", function(e){
   const span = document.querySelector('[data-media="'+id+'"]');
   if(span){ span.textContent = (m==null?"—":fmt1(m)); span.style.color = mediaCor(m); }
   pushRemote(id, false);
-});
-
-/* Galeria: navegação próxima/anterior */
-document.getElementById("grid").addEventListener("click", function(e){
-  const btn = e.target.closest("[data-gal-nav]");
-  if(!btn) return;
-  e.preventDefault();
-  const gal = btn.closest(".gal");
-  const id = gal.dataset.gal;
-  const fotos = fotosOf(id);
-  if(!fotos.length) return;
-  let i = (parseInt(gal.dataset.i, 10) || 0) + parseInt(btn.dataset.galNav, 10);
-  if(i < 0) i = fotos.length - 1;
-  if(i >= fotos.length) i = 0;
-  gal.dataset.i = i;
-  gal.querySelector(".gal-img").src = fotos[i];
-  gal.querySelector(".gal-count").textContent = (i+1) + " / " + fotos.length;
 });
 
 /* Visita: marca/desmarca (família), salva e re-renderiza (reflete selo + filtro) */

@@ -25,8 +25,33 @@
   h1{font-family:'Fraunces',Georgia,serif;font-size:clamp(28px,4.6vw,46px);font-weight:600;letter-spacing:-.02em;line-height:1.02;margin-top:6px}
   .sub{color:#B9C7C2;font-size:clamp(13px,1.4vw,15px);line-height:1.4;max-width:600px;flex:1 1 320px}
 
-  .bar{position:sticky;top:0;z-index:10;background:rgba(234,238,236,.92);backdrop-filter:blur(8px);border-bottom:1px solid var(--line)}
+  .sticky-top{position:sticky;top:0;z-index:20}
+  .tabbar{background:#fff;border-bottom:1px solid var(--line)}
+  .tabbar-in{display:flex;gap:4px;padding:0 22px}
+  .tab{appearance:none;border:none;background:none;font-family:inherit;font-size:14.5px;font-weight:700;color:var(--muted);padding:14px 16px 13px;cursor:pointer;border-bottom:3px solid transparent;margin-bottom:-1px;transition:color .15s}
+  .tab:hover{color:var(--ink)}
+  .tab.active{color:var(--teal-dark);border-bottom-color:var(--teal)}
+  .hero-stats{display:flex;flex-wrap:wrap;gap:8px 18px;margin-top:14px;color:#B9C7C2;font-size:13px;font-weight:600}
+  .hero-stats b{color:#fff;font-weight:800}
+  .bar{background:rgba(234,238,236,.92);backdrop-filter:blur(8px);border-bottom:1px solid var(--line)}
   .bar-in{display:flex;flex-wrap:wrap;align-items:center;gap:12px 18px;padding:14px 22px;max-width:1200px;margin:0 auto}
+
+  /* Tabela comparativa */
+  .cmp-wrap{margin-top:4px;overflow-x:auto;border:1px solid var(--line);border-radius:16px;background:#fff;box-shadow:0 12px 28px -22px rgba(20,40,33,.25);-webkit-overflow-scrolling:touch}
+  table.cmp{border-collapse:separate;border-spacing:0;width:max-content;min-width:100%;font-size:13.5px}
+  table.cmp th,table.cmp td{padding:13px 18px;text-align:left;white-space:nowrap;border-bottom:1px solid var(--line)}
+  table.cmp tbody tr:last-child th,table.cmp tbody tr:last-child td{border-bottom:none}
+  table.cmp thead th{background:var(--ink);color:#fff;font-family:'Fraunces',Georgia,serif;font-weight:600;font-size:15px;line-height:1.15;vertical-align:bottom;position:sticky;top:0;z-index:2}
+  .cmp-id{display:block;font-size:11px;color:#8FD3C7;font-weight:600;font-family:'Inter',sans-serif;margin-top:3px}
+  .cmp-corner{position:sticky;left:0;z-index:4;min-width:140px}
+  .cmp-lbl{position:sticky;left:0;z-index:1;background:var(--paper);font-weight:700;color:var(--ink);text-transform:uppercase;font-size:11px;letter-spacing:.05em}
+  table.cmp tbody td{background:#fff}
+  table.cmp tbody tr:nth-child(even) td{background:#FAFBFA}
+  table.cmp tbody tr:nth-child(even) .cmp-lbl{background:#F3F6F4}
+  table.cmp tbody tr.cmp-preco td{font-family:'Fraunces',Georgia,serif;font-size:16px;font-weight:600;color:var(--teal-dark)}
+  table.cmp .vend{opacity:.45}
+  table.cmp thead th.vend{opacity:.6}
+  .cmp-vtag{display:inline-block;margin-top:4px;font-family:'Inter',sans-serif;font-size:9.5px;font-weight:800;letter-spacing:.1em;color:#fff;background:#B23A2E;padding:2px 7px;border-radius:999px}
   .grp{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
   .lbl{font-size:11.5px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.06em}
   .chip{border:1px solid var(--line);background:#fff;color:var(--muted);font-size:13px;font-weight:600;padding:7px 14px;border-radius:999px;cursor:pointer;transition:all .15s;font-family:inherit}
@@ -146,23 +171,32 @@
     <div class="wrap head-inner">
       <div class="head-left">
         <div class="eyebrow">Vitrine de imóveis · Florianópolis</div>
-        <h1>Apartamentos Floripa</h1>
+        <h1>Encontre o apartamento ideal pra família</h1>
+        <div class="hero-stats" id="hero-stats"></div>
       </div>
-      <p class="sub">Comparativo dos imóveis. Marque a vontade de visitar, dê notas de 0 a 10, abra a localização no Google Maps e veja o anúncio. Notas e marcações ficam salvas neste navegador.</p>
+      <p class="sub">Compare os imóveis lado a lado, marque a vontade de visitar, dê notas de 0 a 10 e veja quais já foram vendidos. Tudo salvo e sincronizado.</p>
     </div>
   </header>
 
-  <div class="bar">
-    <div class="bar-in">
-      <button id="btn-filtros" class="filtros-btn" type="button"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 5h16l-6.5 8v5l-3 1.5V13z"/></svg> Filtros<span id="filtros-count" class="fcount zero">0</span></button>
-      <div class="grp"><span class="lbl">Visita</span><span id="f-visita" class="grp"></span></div>
-      <div class="grp push"><span class="lbl">Ordenar</span>
-        <select id="ordem">
-          <option value="preco-asc">Menor preço</option>
-          <option value="preco-desc">Maior preço</option>
-          <option value="area-desc">Maior área</option>
-          <option value="media-desc">Maior nota média</option>
-        </select>
+  <div class="sticky-top">
+    <div class="tabbar">
+      <div class="wrap tabbar-in">
+        <button class="tab active" data-tab="geral" type="button">Visão Geral</button>
+        <button class="tab" data-tab="comparativo" type="button">Comparativo</button>
+      </div>
+    </div>
+    <div class="bar">
+      <div class="bar-in">
+        <button id="btn-filtros" class="filtros-btn" type="button"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 5h16l-6.5 8v5l-3 1.5V13z"/></svg> Filtros<span id="filtros-count" class="fcount zero">0</span></button>
+        <div class="grp"><span class="lbl">Visita</span><span id="f-visita" class="grp"></span></div>
+        <div class="grp push"><span class="lbl">Ordenar</span>
+          <select id="ordem">
+            <option value="preco-asc">Menor preço</option>
+            <option value="preco-desc">Maior preço</option>
+            <option value="area-desc">Maior área</option>
+            <option value="media-desc">Maior nota média</option>
+          </select>
+        </div>
       </div>
     </div>
   </div>
@@ -172,7 +206,12 @@
       <p class="count" id="count" style="margin:0"></p>
       <span id="sync" style="font-size:12px;font-weight:700;color:var(--muted)"></span>
     </div>
-    <div class="grid" id="grid"></div>
+    <section id="tab-geral">
+      <div class="grid" id="grid"></div>
+    </section>
+    <section id="tab-comparativo" hidden>
+      <div class="cmp-wrap"><div id="cmp"></div></div>
+    </section>
   </main>
 
   <div id="overlay" class="overlay"></div>
@@ -197,7 +236,7 @@
 
 <script>
 const APTS = [
-  {id:1,condominio:"Bela Vista (Roberto)",imobiliaria:"Pense imóveis",valor:830000,bairro:"Itacorubi",area:"88,76",quartos:2,vagas:2,suite:"2 suítes",face:null,cond:null,ocupacao:"Proprietário",obs:"2 suítes, hobby box grande, reformado, terceiro andar vista pro verde",visitar:"SIM",exact:true,addr:"Servidão Feliciano Martins Vieira, 138",lat:-27.5737796,lng:-48.5097034,pid:"ChIJ_Zlrno04J5URyHiGnGokzEc",link:"https://imoveis.novovista.com.br/?v2=a2V5PTkzZDAwYjU2ZmJiZThmOWZjODYxNTgzZWM5NjgxNDAxJmNvZD0yNTQxJmQ9NjQmY3M9MiZtYXBhPU5hbyZiYWlycm9fY29tZXJjaWFsPVNpbSZsb2dpbj1uYW8mc3RhdHVzPVZlbmRhJnB1cnBvc2U9JTVCJTIydmVuZGElMjIlNUQmY29kX2VtPTIyMDU0"},
+  {id:1,condominio:"Bela Vista (Roberto)",imobiliaria:"Pense imóveis",valor:830000,bairro:"Itacorubi",area:"88,76",quartos:2,vagas:2,suite:"2 suítes",banheiros:3,face:null,cond:null,ocupacao:"Proprietário",obs:"2 suítes, hobby box grande, reformado, terceiro andar vista pro verde",visitar:"SIM",exact:true,addr:"Servidão Feliciano Martins Vieira, 138",lat:-27.5737796,lng:-48.5097034,pid:"ChIJ_Zlrno04J5URyHiGnGokzEc",link:"https://imoveis.novovista.com.br/?v2=a2V5PTkzZDAwYjU2ZmJiZThmOWZjODYxNTgzZWM5NjgxNDAxJmNvZD0yNTQxJmQ9NjQmY3M9MiZtYXBhPU5hbyZiYWlycm9fY29tZXJjaWFsPVNpbSZsb2dpbj1uYW8mc3RhdHVzPVZlbmRhJnB1cnBvc2U9JTVCJTIydmVuZGElMjIlNUQmY29kX2VtPTIyMDU0"},
   {id:2,condominio:"Achilles Ceccato",imobiliaria:"Pense imóveis",valor:835000,bairro:"Itacorubi",area:"77,15",quartos:2,vagas:2,suite:null,face:null,cond:null,ocupacao:null,obs:"Cozinha pronta, móveis sob medida",visitar:"Pai e mãe",exact:false,addr:null,lat:null,lng:null,pid:null,link:"https://penseimoveisfloripa.com.br/imovel/ita2915/"},
   {id:3,condominio:"Burle Marx",imobiliaria:"F1 Imobiliária",valor:875000,bairro:"Itacorubi",area:"84,82",quartos:3,vagas:1,suite:null,face:"Leste",cond:null,ocupacao:"Proprietário",obs:"3 quartos, cozinha corredor, precisa de reforma, quinto andar",visitar:"SIM",exact:true,addr:"Rod. Amaro Antônio Viêira, 2797",lat:-27.5881653,lng:-48.4958156,pid:"ChIJr7CBAN84J5URpQgRyl12HdI",link:"http://v.imo.bi/KJ85ByVih7LXVG"},
   {id:4,condominio:"Green Village",imobiliaria:"Daga / F1",valor:1390000,bairro:"Itacorubi",area:"84",quartos:3,vagas:2,suite:null,face:null,cond:"R$ 1.128,77",ocupacao:null,obs:"3 quartos, pouco sol, NEMA",visitar:"SIM",exact:true,addr:"R. Antônio Costa, 11",lat:-27.5797521,lng:-48.5114292,pid:"ChIJ10vCVvI4J5UR7N4CMStp3Z4",link:"https://f1ciaimobiliaria.com.br/imoveis/venda-apartamento-green-village-residence-de-3-quartos-no-bairro-itacorubi-florianopolis-1957252/"},
@@ -214,16 +253,16 @@ const APTS = [
   {id:15,condominio:"Solar de Évora",imobiliaria:"F1 Imobiliária",valor:1081000,bairro:"Itacorubi",area:"90",quartos:2,vagas:null,suite:null,face:"Norte",cond:null,ocupacao:"Proprietário",obs:null,visitar:"SIM",exact:true,addr:"R. Pastor William Richard Schisler Filho, 1128",lat:-27.5777351,lng:-48.5056114,pid:"ChIJWWiBT-w4J5UREjLsq1TWPn0",link:"http://v.imo.bi/ZYF46dVih7LFvH"},
   {id:16,condominio:"Residencial Atalaia",imobiliaria:"Itacorubi Imóveis",valor:1100000,bairro:"Córrego Grande",area:"86,88",quartos:3,vagas:2,suite:null,face:null,cond:"R$ 722,75",ocupacao:null,obs:"Cozinha pronta, lava-louça, móveis sob medida",visitar:"SIM",exact:false,addr:null,lat:null,lng:null,pid:null,link:"https://imoveis.novovista.com.br/?v2=a2V5PTkzZDAwYjU2ZmJiZThmOWZjODYxNTgzZWM5NjgxNDAxJmNvZD1JVEEyNTcwJmQ9NjQmY3M9MiZtYXBhPU5hbyZiYWlycm9fY29tZXJjaWFsPVNpbSZsb2dpbj1uYW8mc3RhdHVzPVZlbmRhJnB1cnBvc2U9JTVCJTIydmVuZGElMjIlNUQmY29kX2VtPTI5NTM3"},
   {id:17,condominio:"Plaza Victoria",imobiliaria:"Pense imóveis",valor:1100000,bairro:"Itacorubi",area:null,quartos:2,vagas:2,suite:null,face:null,cond:null,ocupacao:null,obs:"2 quartos, 2 vagas (dado da observação)",visitar:null,exact:true,addr:"Servidão Recanto Verde, 155",lat:-27.5872707,lng:-48.4957298,pid:"ChIJh9p28N44J5URI_ZddA_k1QI",link:"https://penseimoveisfloripa.com.br/imovel/ita2672/"},
-  {id:18,condominio:"Achilles Ceccato",imobiliaria:"Meu móvel na ilha",valor:1150000,bairro:"Itacorubi",area:"94",quartos:3,vagas:2,suite:null,face:null,cond:"R$ 793,00",ocupacao:null,obs:"2 banheiros com ventilação natural, atrás da FIESC",visitar:"SIM",exact:true,addr:"R. Salvatina F. dos Santos, 155",lat:-27.5915596,lng:-48.4925335,pid:"ChIJ__-_Hic5J5URrM0eV_FP9O8",link:"https://loft.com.br/imovel/apartamento-salvatina-feliciana-dos-santos-itacorubi-florianopolis-3-quartos-94m2/gpyzln8f?tipoTransacao=venda"},
-  {id:19,condominio:"Porto do Itacorubi",imobiliaria:"Brognoli",valor:1150000,bairro:"Itacorubi",area:null,quartos:3,vagas:1,suite:null,face:null,cond:null,ocupacao:null,obs:"3 banheiros, cozinha pronta",visitar:"SIM",exact:true,addr:"Rod. Amaro Antônio Viêira, 2593",lat:-27.5867895,lng:-48.4969773,pid:"ChIJ63_daN44J5URf7VacKX_Z6k",link:"https://www.chavesnamao.com.br/imovel/apartamento-a-venda-3-quartos-com-garagem-sc-florianopolis-itacorubi-118m2-RS1150000/id-41400156/?relatedAds=true"},
+  {id:18,condominio:"Achilles Ceccato",imobiliaria:"Meu móvel na ilha",valor:1150000,bairro:"Itacorubi",area:"94",quartos:3,vagas:2,suite:null,banheiros:2,face:null,cond:"R$ 793,00",ocupacao:null,obs:"2 banheiros com ventilação natural, atrás da FIESC",visitar:"SIM",exact:true,addr:"R. Salvatina F. dos Santos, 155",lat:-27.5915596,lng:-48.4925335,pid:"ChIJ__-_Hic5J5URrM0eV_FP9O8",link:"https://loft.com.br/imovel/apartamento-salvatina-feliciana-dos-santos-itacorubi-florianopolis-3-quartos-94m2/gpyzln8f?tipoTransacao=venda"},
+  {id:19,condominio:"Porto do Itacorubi",imobiliaria:"Brognoli",valor:1150000,bairro:"Itacorubi",area:null,quartos:3,vagas:1,suite:null,banheiros:3,face:null,cond:null,ocupacao:null,obs:"3 banheiros, cozinha pronta",visitar:"SIM",exact:true,addr:"Rod. Amaro Antônio Viêira, 2593",lat:-27.5867895,lng:-48.4969773,pid:"ChIJ63_daN44J5URf7VacKX_Z6k",link:"https://www.chavesnamao.com.br/imovel/apartamento-a-venda-3-quartos-com-garagem-sc-florianopolis-itacorubi-118m2-RS1150000/id-41400156/?relatedAds=true"},
   {id:20,condominio:"Sun Village",imobiliaria:"Itacorubi Imóveis",valor:1180000,bairro:"Itacorubi",area:"89",quartos:3,vagas:1,suite:null,face:null,cond:"R$ 772,00",ocupacao:null,obs:"Todo novo, reformado, NEMA",visitar:"SIM",exact:true,addr:"R. Prof. Ayrton Roberto de Oliveira, 20",lat:-27.578970,lng:-48.5113852,pid:"ChIJIbxl_PI4J5URWlWF6YO3ri4",link:"https://loft.com.br/imovel/apartamento-prof-ayrton-roberto-de-oliveira-itacorubi-florianopolis-3-quartos-89m2/47h9r9u9?tipoTransacao=venda"},
   {id:21,condominio:"Bianca Residencial",imobiliaria:"Salete Maria Vilke / F1",valor:1189000,bairro:"Parque São Jorge",area:"103",quartos:3,vagas:2,suite:null,face:null,cond:"R$ 895,00",ocupacao:null,obs:"Cozinha pronta, quartos com recortes estranhos (pequenos)",visitar:"SIM",exact:true,addr:"Av. Buriti, 680",lat:-27.5913813,lng:-48.5001371,pid:"ChIJ4wsfJOA4J5URVCzud_rG5UU",link:"https://www.chavesnamao.com.br/imovel/apartamento-a-venda-3-quartos-com-garagem-sc-florianopolis-itacorubi-145m2-RS1189500/id-39280044/"},
   {id:22,condominio:"Achilles Ceccato",imobiliaria:"Pense imóveis",valor:1290000,bairro:"Itacorubi",area:"94,2",quartos:3,vagas:2,suite:null,face:null,cond:null,ocupacao:null,obs:"Banheiro social talvez com janela que sai na lavanderia",visitar:"SIM",exact:false,addr:null,lat:null,lng:null,pid:null,link:"https://imoveis.novovista.com.br/?v2=a2V5PTkzZDAwYjU2ZmJiZThmOWZjODYxNTgzZWM5NjgxNDAxJmNvZD1JVEEyNjc3JmQ9NjQmY3M9MiZtYXBhPU5hbyZiYWlycm9fY29tZXJjaWFsPVNpbSZsb2dpbj1uYW8mc3RhdHVzPVZlbmRhJnB1cnBvc2U9JTVCJTIydmVuZGElMjIlNUQmY29kX2VtPTI5NTM3"},
   {id:23,condominio:"Residencial Alvalade",imobiliaria:"Itacorubi Imóveis",valor:890000,bairro:"Itacorubi",area:null,quartos:3,vagas:1,suite:null,face:null,cond:null,ocupacao:null,obs:"NEMA. Área total: 91 m²",visitar:"SIM",exact:true,addr:"R. Antônio Costa, 65",lat:-27.5798579,lng:-48.5105691,pid:"ChIJ___TR_I4J5UR8dk1i5lxJZ0",link:"https://www.chavesnamao.com.br/imovel/apartamento-a-venda-3-quartos-com-garagem-sc-florianopolis-itacorubi-91m2-RS890000/id-42523272/"},
-  {id:24,condominio:"Paris Dakar",imobiliaria:"F1 Imobiliária",valor:995000,bairro:"Itacorubi",area:"74,95",areaTotal:"101,94",quartos:3,vagas:2,suite:"1 suíte",face:null,cond:"R$ 950,00",ocupacao:null,obs:"2 banheiros",visitar:null,exact:true,addr:"Rod. Amaro Antônio Viêira, 2371",lat:-27.584937,lng:-48.4971764,pid:"ChIJBfxkzN04J5URsPkmSpCjPDw",link:"https://imoveis.novovista.com.br/?v2=a2V5PTZiYzc3N2IwMTRlNTRhNTY4ZmJjOWM4OTZiNzFmZmMwJmNvZD0xOTU5MzA4JmQ9NjU3JmNzPTEmbWFwYT1OYW8mYmFpcnJvX2NvbWVyY2lhbD1OYW8mbG9naW49bmFvJnN0YXR1cz1WZW5kYSZwdXJwb3NlPSU1QiUyMnZlbmRhJTIyJTVEJmNvZF9lbT0xODEyMg"},
+  {id:24,condominio:"Paris Dakar",imobiliaria:"F1 Imobiliária",valor:995000,bairro:"Itacorubi",area:"74,95",areaTotal:"101,94",quartos:3,vagas:2,suite:"1 suíte",banheiros:2,face:null,cond:"R$ 950,00",ocupacao:null,obs:"2 banheiros",visitar:null,exact:true,addr:"Rod. Amaro Antônio Viêira, 2371",lat:-27.584937,lng:-48.4971764,pid:"ChIJBfxkzN04J5URsPkmSpCjPDw",link:"https://imoveis.novovista.com.br/?v2=a2V5PTZiYzc3N2IwMTRlNTRhNTY4ZmJjOWM4OTZiNzFmZmMwJmNvZD0xOTU5MzA4JmQ9NjU3JmNzPTEmbWFwYT1OYW8mYmFpcnJvX2NvbWVyY2lhbD1OYW8mbG9naW49bmFvJnN0YXR1cz1WZW5kYSZwdXJwb3NlPSU1QiUyMnZlbmRhJTIyJTVEJmNvZF9lbT0xODEyMg"},
   {id:25,condominio:"Boulevard Oriano",imobiliaria:"F1 Imobiliária",valor:850000,bairro:"João Paulo",area:"80",quartos:3,vagas:2,suite:null,face:null,cond:"R$ 877,00 + rateio R$ 209,00",ocupacao:null,obs:"Com pet place, mercadinho, vista livre e pôr do sol, reformado, quinto andar",visitar:null,exact:true,addr:"Rodovia João Paulo, 710",lat:-27.5662603,lng:-48.5155495,pid:"ChIJY3MS-IY4J5URD7bs5i2lUmk",link:"https://quartier.remax.com.br/pt-br/imoveis/apartamento/venda/florianopolis/710-rodovia-joao-paulo/590441064-23"},
-  {id:26,condominio:"Solar da Primavera",imobiliaria:"Pense imóveis / Itacorubi Imóveis",corretor:"Bruna",valor:1100000,bairro:"Córrego Grande",area:"83,17",areaTotal:"125,4",quartos:2,vagas:2,suite:"2 suítes",face:"Leste e Sul",cond:"R$ 1.049,49",ocupacao:null,obs:"3 banheiros, hobby box, sacada com reiki",visitar:null,exact:true,addr:"R. Pireneus, 86",lat:-27.6042303,lng:-48.5009955,pid:"ChIJz1VTUxY5J5URqmPhLGzlwSI",link:"http://v.imo.bi/ZYDLjkVih7p4J9"},
-  {id:27,condominio:"Luiza Napoli",imobiliaria:"Qualité",valor:780000,bairro:"Itacorubi",area:"73,40",areaTotal:"95,33",quartos:2,vagas:1,suite:null,face:"Leste, Norte e Oeste",cond:null,ocupacao:null,obs:"Hobby box, quinto andar, vista livre para o verde, aceita proposta até 750 mil",visitar:null,exact:true,addr:"R. Pastor William Richard Schisler Filho, 980",lat:-27.5768002,lng:-48.5068613,pid:"ChIJMT_RGu04J5URn-mF7QWEt2k",link:null}
+  {id:26,condominio:"Solar da Primavera",imobiliaria:"Pense imóveis / Itacorubi Imóveis",corretor:"Bruna",valor:1100000,bairro:"Córrego Grande",area:"83,17",areaTotal:"125,4",quartos:2,vagas:2,suite:"2 suítes",banheiros:3,face:"Leste e Sul",cond:"R$ 1.049,49",ocupacao:null,obs:"3 banheiros, hobby box, sacada com reiki",visitar:null,exact:true,addr:"R. Pireneus, 86",lat:-27.6042303,lng:-48.5009955,pid:"ChIJz1VTUxY5J5URqmPhLGzlwSI",link:"http://v.imo.bi/ZYDLjkVih7p4J9"},
+  {id:27,condominio:"Luiza Napoli",imobiliaria:"Qualité",valor:780000,bairro:"Itacorubi",area:"73,40",areaTotal:"95,33",quartos:2,vagas:1,suite:null,banheiros:1,face:"Leste, Norte e Oeste",cond:null,ocupacao:null,obs:"Hobby box, quinto andar, vista livre para o verde, aceita proposta até 750 mil",visitar:null,exact:true,addr:"R. Pastor William Richard Schisler Filho, 980",lat:-27.5768002,lng:-48.5068613,pid:"ChIJMT_RGu04J5URn-mF7QWEt2k",link:null}
 ];
 
 const BAIRRO_COR = {"Itacorubi":"#0B6E63","Córrego Grande":"#1D5C8A","Parque São Jorge":"#A66A12","João Paulo":"#7A4FA3"};
@@ -253,6 +292,10 @@ function corretorHtml(a){
 const corBairro = b => BAIRRO_COR[b] || "#5E6E69";
 const brl = n => n.toLocaleString("pt-BR",{style:"currency",currency:"BRL",maximumFractionDigits:0});
 const titulo = a => a.condominio || ("Apartamento • " + a.imobiliaria);
+/* Suítes/Banheiros: usa valor explícito; senão aplica regra (2 quartos => 1 suíte e 2 banheiros) */
+function suiteOf(a){ if(a.suite) return a.suite; if(a.quartos===2) return "1 suíte"; return null; }
+function suiteNum(a){ if(a.suite){ const m=String(a.suite).match(/\d+/); return m?m[0]:String(a.suite); } if(a.quartos===2) return "1"; return null; }
+function banhoNum(a){ if(a.banheiros!=null) return a.banheiros; if(a.quartos===2) return 2; return null; }
 const esc = s => String(s).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;");
 const fmt1 = v => v.toLocaleString("pt-BR",{minimumFractionDigits:1,maximumFractionDigits:1});
 
@@ -357,6 +400,7 @@ const ICON = {
   cal:'<rect x="3" y="4.5" width="18" height="16" rx="2"/><path d="M3 9h18M8 2.5v4M16 2.5v4"/>',
   check:'<path d="M20 6 9 17l-5-5"/>',
   x:'<path d="M6 6l12 12M18 6 6 18"/>',
+  bath:'<path d="M4 12h16v3a4 4 0 0 1-4 4H8a4 4 0 0 1-4-4z"/><path d="M6 12V6.5A2.5 2.5 0 0 1 8.5 4a2.3 2.3 0 0 1 2 1.2"/><path d="M6 19l-1.2 2M18 19l1.2 2"/>',
   arrow:'<path d="M5 12h14M13 6l6 6-6 6"/>'
 };
 const svg = (k,sz,sw) => '<svg width="'+(sz||16)+'" height="'+(sz||16)+'" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="'+(sw||1.7)+'" stroke-linecap="round" stroke-linejoin="round">'+ICON[k]+'</svg>';
@@ -416,7 +460,8 @@ function cardHtml(a){
     '<div class="details"><ul>'+
       det("ruler","Área privativa",a.area?a.area+" m²":null)+
       det("ruler","Área total",a.areaTotal?a.areaTotal+" m²":null)+
-      det("bed","Suíte",a.suite)+
+      det("bed","Suíte",suiteOf(a))+
+      det("bath","Banheiros",banhoNum(a))+
       det("coins","Condomínio",a.cond)+
       det("sun","Face solar",a.face)+
       det("key","Ocupação",a.ocupacao)+
@@ -468,6 +513,41 @@ function buildChips(){
   document.querySelectorAll("[data-disp]").forEach(el=>el.onclick=()=>{ fOcultarVendidos=!fOcultarVendidos; render(); });
 }
 
+const CMP_ROWS = [
+  ["Preço", a=>brl(a.valor), "cmp-preco"],
+  ["Área privativa", a=>a.area?a.area+" m²":"—"],
+  ["Área total", a=>a.areaTotal?a.areaTotal+" m²":"—"],
+  ["Quartos", a=>a.quartos==null?"—":String(a.quartos)],
+  ["Suítes", a=>{ const v=suiteNum(a); return v==null?"—":String(v); }],
+  ["Banheiros", a=>{ const v=banhoNum(a); return v==null?"—":String(v); }],
+  ["Vagas", a=>a.vagas==null?"—":String(a.vagas)],
+  ["Condomínio", a=>a.cond||"—"]
+];
+function buildTable(list){
+  const cmp=document.getElementById("cmp");
+  if(!cmp) return;
+  if(!list.length){ cmp.innerHTML='<div class="empty" style="border:none">Nenhum imóvel com esses filtros.</div>'; return; }
+  let h='<table class="cmp"><thead><tr><th class="cmp-corner">Imóvel</th>';
+  list.forEach(function(a){
+    h+='<th class="'+(vendidos[a.id]?"vend":"")+'">'+esc(titulo(a))+'<span class="cmp-id">#'+a.id+'</span>'+(vendidos[a.id]?'<span class="cmp-vtag">Vendido</span>':'')+'</th>';
+  });
+  h+='</tr></thead><tbody>';
+  CMP_ROWS.forEach(function(row){
+    h+='<tr'+(row[2]?' class="'+row[2]+'"':'')+'><th class="cmp-lbl">'+esc(row[0])+'</th>';
+    list.forEach(function(a){ h+='<td class="'+(vendidos[a.id]?"vend":"")+'">'+esc(String(row[1](a)))+'</td>'; });
+    h+='</tr>';
+  });
+  h+='</tbody></table>';
+  cmp.innerHTML=h;
+}
+function buildHeroStats(){
+  const el=document.getElementById("hero-stats");
+  if(!el) return;
+  const min=Math.min.apply(null,APTS.map(a=>a.valor)), max=Math.max.apply(null,APTS.map(a=>a.valor));
+  const bairros=new Set(APTS.map(a=>a.bairro)).size;
+  el.innerHTML='<span><b>'+APTS.length+'</b> imóveis</span><span>de <b>'+brl(min)+'</b> a <b>'+brl(max)+'</b></span><span><b>'+bairros+'</b> bairros</span>';
+}
+
 function render(){
   buildChips();
   let r = APTS.filter(a=>{
@@ -499,6 +579,8 @@ function render(){
     count.innerHTML='<strong>'+r.length+'</strong> '+(r.length===1?"imóvel":"imóveis")+' · de '+brl(min)+' a '+brl(max);
     grid.innerHTML=r.map(cardHtml).join("");
   }
+  buildTable(r);
+  buildHeroStats();
 }
 
 /* Notas: clamp 0-10, salva e atualiza média ao vivo */
@@ -544,6 +626,16 @@ document.getElementById("grid").addEventListener("click", function(e){
 });
 
 document.getElementById("ordem").addEventListener("change",e=>{fOrdem=e.target.value;render();});
+
+/* Abas: Visão Geral / Comparativo */
+let activeTab='geral';
+function setTab(t){
+  activeTab=t;
+  document.querySelectorAll(".tab").forEach(b=>b.classList.toggle("active", b.dataset.tab===t));
+  document.getElementById("tab-geral").hidden = (t!=="geral");
+  document.getElementById("tab-comparativo").hidden = (t!=="comparativo");
+}
+document.querySelectorAll(".tab").forEach(b=>b.addEventListener("click",()=>setTab(b.dataset.tab)));
 
 /* Drawer de filtros */
 const drawerEl=document.getElementById("drawer"), overlayEl=document.getElementById("overlay");

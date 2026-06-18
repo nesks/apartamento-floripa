@@ -68,7 +68,17 @@
 
   .grid{display:grid;gap:20px;grid-template-columns:repeat(auto-fill,minmax(300px,1fr))}
 
-  .card{display:flex;flex-direction:column;background:var(--card);border:1px solid var(--line);border-radius:18px;overflow:hidden;box-shadow:0 1px 2px rgba(20,40,33,.04),0 12px 28px -18px rgba(20,40,33,.25);transition:transform .2s,box-shadow .2s}
+  .card{position:relative;display:flex;flex-direction:column;background:var(--card);border:1px solid var(--line);border-radius:18px;overflow:hidden;box-shadow:0 1px 2px rgba(20,40,33,.04),0 12px 28px -18px rgba(20,40,33,.25);transition:transform .2s,box-shadow .2s}
+  /* Estado vendido: faixa diagonal + véu de esmaecimento */
+  .veil{position:absolute;inset:0;background:rgba(247,249,248,.62);z-index:2;display:none;pointer-events:none}
+  .ribbon{position:absolute;top:18px;right:-40px;width:160px;transform:rotate(45deg);background:#B23A2E;color:#fff;text-align:center;text-transform:uppercase;font-size:11px;font-weight:800;letter-spacing:.14em;padding:5px 0;box-shadow:0 4px 12px -3px rgba(0,0,0,.35);z-index:4;display:none}
+  .card.vendido .veil{display:block}
+  .card.vendido .ribbon{display:block}
+  .card.vendido .price{text-decoration:line-through;text-decoration-thickness:2px;color:var(--muted)}
+  .price-row{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-top:12px}
+  .vend-btn{position:relative;z-index:3;flex-shrink:0;display:inline-flex;align-items:center;gap:5px;border:1px solid var(--line);background:#fff;color:var(--muted);font-family:inherit;font-size:11.5px;font-weight:700;padding:6px 11px;border-radius:999px;cursor:pointer;transition:all .15s;white-space:nowrap}
+  .vend-btn:hover{border-color:#B23A2E;color:#B23A2E}
+  .vend-btn.on{background:#B23A2E;border-color:#B23A2E;color:#fff}
   .card:hover{transform:translateY(-3px);box-shadow:0 1px 2px rgba(20,40,33,.05),0 20px 40px -20px rgba(20,40,33,.35)}
   .head{padding:16px 18px 14px}
   .head-top{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:12px}
@@ -76,7 +86,7 @@
   .status{font-size:11px;font-weight:700;letter-spacing:.04em;text-transform:uppercase;padding:4px 9px;border-radius:999px;white-space:nowrap}
   .title{font-family:'Fraunces',Georgia,serif;font-size:21px;font-weight:600;line-height:1.15;letter-spacing:-.01em}
   .agency{color:var(--muted);font-size:12.5px;margin-top:3px}
-  .price{margin-top:12px;font-family:'Fraunces',Georgia,serif;font-size:27px;font-weight:600;letter-spacing:-.02em}
+  .price{font-family:'Fraunces',Georgia,serif;font-size:27px;font-weight:600;letter-spacing:-.02em}
 
   .addr{display:flex;align-items:center;gap:8px;margin-top:12px;font-size:12.5px;color:var(--muted);border:1px solid var(--line);background:#fff;padding:8px 10px;border-radius:10px;transition:all .15s}
   .addr:hover{border-color:var(--teal);color:var(--teal-dark);background:var(--teal-tint)}
@@ -174,6 +184,7 @@
       <div class="fgroup"><div class="fglabel">Bairro</div><div id="f-bairro" class="fchips"></div></div>
       <div class="fgroup"><div class="fglabel">Quartos</div><div id="f-quartos" class="fchips"></div></div>
       <div class="fgroup"><div class="fglabel">Corretor</div><div id="f-corretor" class="fchips"></div></div>
+      <div class="fgroup"><div class="fglabel">Disponibilidade</div><div id="f-disp" class="fchips"></div></div>
     </div>
     <div class="drawer-foot">
       <button id="limpar" class="btn-limpar" type="button">Limpar filtros</button>
@@ -254,6 +265,12 @@ let visitas = {};
 try { visitas = JSON.parse(localStorage.getItem(VKEY)) || {}; } catch(e) { visitas = {}; }
 function saveV(){ try { localStorage.setItem(VKEY, JSON.stringify(visitas)); } catch(e){} }
 
+/* ---- Vendido (família, persistido) ---- */
+const VENDKEY = "vendidosApartamentosFloripa";
+let vendidos = {};
+try { vendidos = JSON.parse(localStorage.getItem(VENDKEY)) || {}; } catch(e) { vendidos = {}; }
+function saveVend(){ try { localStorage.setItem(VENDKEY, JSON.stringify(vendidos)); } catch(e){} }
+
 /* ---- Sincronização com a planilha (Google Apps Script) ---- */
 const API = "https://script.google.com/macros/s/AKfycbw87sfaP_8Jsxy2Cr6ID-mMpokzjgDRg89CQGCnPJIdrDx5gSAIaRNyYsdrfQMDoFq9/exec";
 let syncEl = null;
@@ -261,7 +278,7 @@ function setSync(txt, color){ if(syncEl){ syncEl.textContent = txt; syncEl.style
 
 function payloadFor(id){
   const n = notas[id] || {};
-  return { id:String(id), b:(n.b==null?null:n.b), c:(n.c==null?null:n.c), t:(n.t==null?null:n.t), visita:(visitas[id]||"") };
+  return { id:String(id), b:(n.b==null?null:n.b), c:(n.c==null?null:n.c), t:(n.t==null?null:n.t), visita:(visitas[id]||""), vendido:(vendidos[id]?1:0) };
 }
 
 const _timers = {};
@@ -287,8 +304,9 @@ function loadFromServer(){
         if(d.t!=null && d.t!=="") nn.t = parseFloat(d.t);
         if(Object.keys(nn).length) notas[id] = nn; else delete notas[id];
         if(d.visita) visitas[id] = d.visita; else delete visitas[id];
+        if(d.vendido==1 || d.vendido===true || d.vendido==="1" || d.vendido==="TRUE") vendidos[id] = true; else delete vendidos[id];
       });
-      save(); saveV(); render();
+      save(); saveV(); saveVend(); render();
       setSync("Tudo salvo na planilha", "#0B6E63");
     } else {
       setSync("Sem conexão — salvo neste aparelho", "#B23A2E");
@@ -370,7 +388,8 @@ function cardHtml(a){
   const acc = corBairro(a.bairro);
   const m = media(a.id);
   return ''+
-  '<article class="card" data-card="'+a.id+'">'+
+  '<article class="card'+(vendidos[a.id]?' vendido':'')+'" data-card="'+a.id+'">'+
+    '<div class="veil"></div><div class="ribbon">Vendido</div>'+
     '<div class="head" style="border-top:4px solid '+acc+'">'+
       '<div class="head-top">'+
         '<span class="bairro" style="color:'+acc+'">'+svg("pin",14)+' '+esc(a.bairro)+'</span>'+
@@ -378,7 +397,9 @@ function cardHtml(a){
       '</div>'+
       '<h2 class="title">'+esc(titulo(a))+'</h2>'+
       '<p class="agency">'+esc(a.imobiliaria)+' | #'+a.id+'</p>'+
-      '<div class="price">'+brl(a.valor)+'</div>'+
+      '<div class="price-row"><div class="price">'+brl(a.valor)+'</div>'+
+        '<button class="vend-btn'+(vendidos[a.id]?" on":"")+'" data-vend="'+a.id+'" type="button">'+(vendidos[a.id]?svg("check",13,2)+' Vendido':'Marcar vendido')+'</button>'+
+      '</div>'+
       '<a class="addr" href="'+mapsUrl(a)+'" target="_blank" rel="noopener noreferrer" title="Abrir no Google Maps">'+
         svg("pin",15)+'<span class="txt">'+esc(addrText(a))+'</span>'+
         '<span class="tag">'+svg("pin",11)+' Mapa</span>'+
@@ -409,6 +430,7 @@ function cardHtml(a){
 let fBairro="Todos", fQuartos="Todos", fOrdem="preco-asc";
 let fVisita = new Set();   // multi-seleção: nao / agendar / visitado / sem
 let fCorretor = new Set(); // multi-seleção por corretor (+ "sem")
+let fOcultarVendidos = false;
 
 function buildChips(){
   const bairros = ["Todos", ...new Set(APTS.map(a=>a.bairro))];
@@ -438,6 +460,8 @@ function buildChips(){
     return '<button class="chip'+(on?" active":"")+'" data-cor="'+esc(k)+'"'+(on?' style="background:'+col+';border-color:'+col+'"':'')+'>'+esc(lab)+'</button>';
   }).join("");
   document.querySelectorAll("[data-cor]").forEach(el=>el.onclick=()=>{ const k=el.dataset.cor; if(fCorretor.has(k)) fCorretor.delete(k); else fCorretor.add(k); render(); });
+  document.getElementById("f-disp").innerHTML = '<button class="chip'+(fOcultarVendidos?" active":"")+'" data-disp="1"'+(fOcultarVendidos?' style="background:#B23A2E;border-color:#B23A2E"':'')+'>Ocultar vendidos</button>';
+  document.querySelectorAll("[data-disp]").forEach(el=>el.onclick=()=>{ fOcultarVendidos=!fOcultarVendidos; render(); });
 }
 
 function render(){
@@ -447,6 +471,7 @@ function render(){
     if(fQuartos!=="Todos" && String(a.quartos)!==fQuartos) return false;
     if(fVisita.size>0){ const v=visitas[a.id]||"sem"; if(!fVisita.has(v)) return false; }
     if(fCorretor.size>0){ const c=corretorOf(a)||"(sem)"; if(!fCorretor.has(c)) return false; }
+    if(fOcultarVendidos && vendidos[a.id]) return false;
     return true;
   });
   r.sort((x,y)=>{
@@ -457,7 +482,7 @@ function render(){
     return 0;
   });
   const grid=document.getElementById("grid"), count=document.getElementById("count");
-  const fc=(fBairro!=="Todos"?1:0)+(fQuartos!=="Todos"?1:0)+fCorretor.size;
+  const fc=(fBairro!=="Todos"?1:0)+(fQuartos!=="Todos"?1:0)+fCorretor.size+(fOcultarVendidos?1:0);
   const fce=document.getElementById("filtros-count");
   if(fce){ fce.textContent=fc; fce.classList.toggle("zero", fc===0); }
   const vc=document.getElementById("ver-count");
@@ -494,8 +519,17 @@ document.getElementById("grid").addEventListener("input", function(e){
   pushRemote(id, false);
 });
 
-/* Visita: marca/desmarca (família), salva e re-renderiza (reflete selo + filtro) */
+/* Visita / Vendido: marca/desmarca (família), salva e re-renderiza */
 document.getElementById("grid").addEventListener("click", function(e){
+  const vbtn = e.target.closest("button[data-vend]");
+  if(vbtn){
+    const id = vbtn.dataset.vend;
+    if(vendidos[id]) delete vendidos[id]; else vendidos[id] = true;
+    saveVend();
+    pushRemote(id, true);
+    render();
+    return;
+  }
   const btn = e.target.closest("button[data-visit]");
   if(!btn) return;
   const id = btn.dataset.id, k = btn.dataset.visit;
@@ -516,7 +550,7 @@ document.getElementById("drawer-close").onclick=closeDrawer;
 document.getElementById("ver").onclick=closeDrawer;
 overlayEl.onclick=closeDrawer;
 document.addEventListener("keydown",e=>{ if(e.key==="Escape") closeDrawer(); });
-document.getElementById("limpar").onclick=()=>{ fBairro="Todos"; fQuartos="Todos"; fCorretor=new Set(); render(); };
+document.getElementById("limpar").onclick=()=>{ fBairro="Todos"; fQuartos="Todos"; fCorretor=new Set(); fOcultarVendidos=false; render(); };
 
 syncEl = document.getElementById("sync");
 render();

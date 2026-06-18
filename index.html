@@ -33,6 +33,34 @@
   select{border:1px solid var(--line);background:#fff;color:var(--ink);font-size:13.5px;font-weight:600;padding:8px 12px;border-radius:10px;cursor:pointer;font-family:inherit}
   .push{margin-left:auto}
 
+  /* Botão de filtros + contador */
+  .filtros-btn{display:inline-flex;align-items:center;gap:8px;border:1px solid var(--line);background:#fff;color:var(--ink);font-family:inherit;font-weight:700;font-size:13.5px;padding:8px 14px;border-radius:10px;cursor:pointer;transition:all .15s;margin-right:10px}
+  .filtros-btn:hover{border-color:var(--teal);color:var(--teal-dark)}
+  .filtros-btn svg{color:var(--teal)}
+  .fcount{display:inline-flex;align-items:center;justify-content:center;min-width:20px;height:20px;padding:0 6px;background:var(--teal);color:#fff;border-radius:999px;font-size:11.5px;font-weight:800}
+  .fcount.zero{display:none}
+
+  /* Drawer lateral de filtros */
+  .overlay{position:fixed;inset:0;background:rgba(20,33,31,.45);opacity:0;visibility:hidden;transition:opacity .25s;z-index:40}
+  .overlay.open{opacity:1;visibility:visible}
+  .drawer{position:fixed;top:0;right:0;height:100%;width:360px;max-width:88vw;background:#fff;box-shadow:-12px 0 40px -20px rgba(20,40,33,.45);transform:translateX(100%);transition:transform .28s cubic-bezier(.4,0,.2,1);z-index:50;display:flex;flex-direction:column}
+  .drawer.open{transform:translateX(0)}
+  .drawer-head{display:flex;align-items:center;justify-content:space-between;padding:18px 20px;border-bottom:1px solid var(--line)}
+  .drawer-title{display:flex;align-items:center;gap:9px;font-family:'Fraunces',Georgia,serif;font-size:20px;font-weight:600;color:var(--ink)}
+  .drawer-title svg{color:var(--teal)}
+  .drawer-x{display:flex;align-items:center;justify-content:center;width:34px;height:34px;border:1px solid var(--line);background:#fff;border-radius:9px;cursor:pointer;color:var(--muted);transition:all .15s}
+  .drawer-x:hover{border-color:var(--teal);color:var(--teal)}
+  .drawer-body{flex:1;overflow-y:auto;padding:4px 20px}
+  .fgroup{padding:18px 0;border-bottom:1px solid var(--line)}
+  .fgroup:last-child{border-bottom:none}
+  .fglabel{font-size:11.5px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.06em;margin-bottom:11px}
+  .fchips{display:flex;flex-wrap:wrap;gap:8px}
+  .drawer-foot{display:flex;gap:10px;padding:16px 20px;border-top:1px solid var(--line)}
+  .btn-limpar{flex:1;border:1px solid var(--line);background:#fff;color:var(--muted);font-family:inherit;font-weight:700;font-size:14px;padding:11px;border-radius:11px;cursor:pointer;transition:all .15s}
+  .btn-limpar:hover{border-color:#B23A2E;color:#B23A2E}
+  .btn-ver{flex:1.4;border:none;background:var(--teal);color:#fff;font-family:inherit;font-weight:700;font-size:14px;padding:11px;border-radius:11px;cursor:pointer;transition:background .15s}
+  .btn-ver:hover{background:var(--teal-dark)}
+
   .count{color:var(--muted);font-size:13.5px;margin:24px 0 18px}
   .count strong{color:var(--ink)}
 
@@ -111,10 +139,8 @@
 
   <div class="bar">
     <div class="bar-in">
-      <div class="grp"><span class="lbl">Bairro</span><span id="f-bairro" class="grp"></span></div>
-      <div class="grp"><span class="lbl">Quartos</span><span id="f-quartos" class="grp"></span></div>
+      <button id="btn-filtros" class="filtros-btn" type="button"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 5h16l-6.5 8v5l-3 1.5V13z"/></svg> Filtros<span id="filtros-count" class="fcount zero">0</span></button>
       <div class="grp"><span class="lbl">Visita</span><span id="f-visita" class="grp"></span></div>
-      <div class="grp"><span class="lbl">Corretor</span><span id="f-corretor" class="grp"></span></div>
       <div class="grp push"><span class="lbl">Ordenar</span>
         <select id="ordem">
           <option value="preco-asc">Menor preço</option>
@@ -133,6 +159,23 @@
     </div>
     <div class="grid" id="grid"></div>
   </main>
+
+  <div id="overlay" class="overlay"></div>
+  <aside id="drawer" class="drawer" aria-hidden="true">
+    <div class="drawer-head">
+      <span class="drawer-title"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 5h16l-6.5 8v5l-3 1.5V13z"/></svg> Filtros</span>
+      <button id="drawer-close" class="drawer-x" type="button" aria-label="Fechar"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 6l12 12M18 6 6 18"/></svg></button>
+    </div>
+    <div class="drawer-body">
+      <div class="fgroup"><div class="fglabel">Bairro</div><div id="f-bairro" class="fchips"></div></div>
+      <div class="fgroup"><div class="fglabel">Quartos</div><div id="f-quartos" class="fchips"></div></div>
+      <div class="fgroup"><div class="fglabel">Corretor</div><div id="f-corretor" class="fchips"></div></div>
+    </div>
+    <div class="drawer-foot">
+      <button id="limpar" class="btn-limpar" type="button">Limpar filtros</button>
+      <button id="ver" class="btn-ver" type="button">Ver <span id="ver-count"></span></button>
+    </div>
+  </aside>
 
   <footer>Dados da planilha “Apartamentos Floripa”. Endereços exatos via Google Maps quando o condomínio é nomeado; demais com localização aproximada pelo bairro. Notas e marcações de visita são salvas localmente no seu navegador.</footer>
 
@@ -410,6 +453,11 @@ function render(){
     return 0;
   });
   const grid=document.getElementById("grid"), count=document.getElementById("count");
+  const fc=(fBairro!=="Todos"?1:0)+(fQuartos!=="Todos"?1:0)+fCorretor.size;
+  const fce=document.getElementById("filtros-count");
+  if(fce){ fce.textContent=fc; fce.classList.toggle("zero", fc===0); }
+  const vc=document.getElementById("ver-count");
+  if(vc){ vc.textContent=r.length+(r.length===1?" imóvel":" imóveis"); }
   if(r.length===0){
     grid.innerHTML='<div class="empty">Nenhum imóvel com esses filtros. Ajuste o bairro, os quartos ou a marcação de visita.</div>';
     count.innerHTML="0 imóveis";
@@ -454,6 +502,18 @@ document.getElementById("grid").addEventListener("click", function(e){
 });
 
 document.getElementById("ordem").addEventListener("change",e=>{fOrdem=e.target.value;render();});
+
+/* Drawer de filtros */
+const drawerEl=document.getElementById("drawer"), overlayEl=document.getElementById("overlay");
+function openDrawer(){ drawerEl.classList.add("open"); overlayEl.classList.add("open"); drawerEl.setAttribute("aria-hidden","false"); }
+function closeDrawer(){ drawerEl.classList.remove("open"); overlayEl.classList.remove("open"); drawerEl.setAttribute("aria-hidden","true"); }
+document.getElementById("btn-filtros").onclick=openDrawer;
+document.getElementById("drawer-close").onclick=closeDrawer;
+document.getElementById("ver").onclick=closeDrawer;
+overlayEl.onclick=closeDrawer;
+document.addEventListener("keydown",e=>{ if(e.key==="Escape") closeDrawer(); });
+document.getElementById("limpar").onclick=()=>{ fBairro="Todos"; fQuartos="Todos"; fCorretor=new Set(); render(); };
+
 syncEl = document.getElementById("sync");
 render();
 loadFromServer();

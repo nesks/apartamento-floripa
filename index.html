@@ -360,7 +360,7 @@ function loadFromServer(){
         if(d.t!=null && d.t!=="") nn.t = parseFloat(d.t);
         if(Object.keys(nn).length) notas[id] = nn; else delete notas[id];
         if(d.visita) visitas[id] = d.visita; else delete visitas[id];
-        if(d.vendido==1 || d.vendido===true || d.vendido==="1" || d.vendido==="TRUE") vendidos[id] = true; else delete vendidos[id];
+        if(d.vendido!=null && d.vendido!==""){ if(d.vendido==1 || d.vendido===true || d.vendido==="1" || String(d.vendido).toUpperCase()==="TRUE") vendidos[id] = true; else delete vendidos[id]; }
       });
       save(); saveV(); saveVend(); render();
       setSync("Tudo salvo na planilha", "#0B6E63");
